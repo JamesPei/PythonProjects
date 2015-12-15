@@ -18,5 +18,67 @@ class Dispatcher:
         if prefix == 'start': args += attrs,
         if callable(method):method(*args)
 
+    def startElement(self,name,attrs):
+        self.dispatch('start',name,attrs)
 
+    def endElement(self,name):
+        self.dispatch('end',name)
+
+class WebsiteConstructor(Dispatcher,ContentHandler):
+
+    passthrough = False
+
+    def __init__(self,directory):
+        self.directory = [directory]
+        self.ensureDirectory()
+
+    def ensureDirectory(self):
+        #Python的函数定义中有两种特殊的情况，即出现*，**的形式
+        #* 用来传递任意个无名字参数，这些参数会一个Tuple的形式访问
+        #**用来处理传递任意个有名字的参数，这些参数用dict来访问。
+        #参看http://blog.sina.com.cn/s/blog_7dc317590101cbkr.html
+        path = os.path.join(*self.directory)
+        if not os.path.isdir(path):os.mkdirs(path)
+
+    def characters(self, chars):
+        if self.passthrough:self.out.write(chars)
+
+    def defaultStart(self,name,attrs):
+        if self.passthrough:
+            self.out.write('<' + name)
+            for key,val in attrs.items():
+                self.out.write('%s = "%s"' % (key,val))
+            self.out.write('>')
+
+    def defaultEnd(self,name):
+        if self.passthrough:
+            self.out.write('</%s>' % name)
+
+    def startDirectory(self,attrs):
+        self.directory.append(attrs['name'])
+        self.ensureDirectory()
+
+    def endDirectory(self):
+        self.directory.pop()
+
+    def startPage(self,attrs):
+        filename = os.path.join(*self.directory+[attrs['name']+'.html'])
+        self.out = open(filename,'w')
+        self.writeHeader(attrs['title'])
+        self.passthrough = True
+
+    def endPage(self):
+        self.passthrough = False
+        self.writeFooter()
+        self.out.close()
+
+    def writeHeader(self,title):
+        self.out.write('<html>\n<head>\n   <title>')
+        self.out.write(title)
+        self.out.write('</title>\n</head>\n   <body>\n')
+
+    def writeFooter(self):
+        self.out.write('\n</body>\n</html>\n')
+
+parse('website.xml',WebsiteConstructor('public_html'))
 
