@@ -116,12 +116,14 @@ class LogoutRoom(Room):
         except KeyError:pass
 
 #单会话，负责和单用户通信
+#ChatSession对象会将目前读取的数据保存为字符串列表data，
+#当读入更多数据时，collect_incoming_data会被自动调用.它会将新读入的数据追加到列表中
 class ChatSession(async_chat):
 
     def __init__(self, server, sock):
         async_chat.__init__(self,sock)
         self.server = server
-        self.set_terminator("\r\n")
+        self.set_terminator("\r\n")     #用于将行终止符设定为\r\n，它也是网络协议中通用的终止符
         self.data = []
         self.name = None
         #所有的会话都开始于单独的LoginRoom中：
@@ -138,7 +140,7 @@ class ChatSession(async_chat):
     def collect_incoming_data(self, data):
         self.data.append(data)
 
-    def found_terminator(self):
+    def found_terminator(self):     #在读到终止符时被调用
         line = ''.join(self.data)
         self.data = []
         try:self.room.handle(self, line)
@@ -153,9 +155,9 @@ class ChatSession(async_chat):
 class ChatServer(dispatcher):
 
     def __init__(self, port, name):
-        dispatcher.__init__(self)
+        dispatcher.__init__(self)        #标准设置任务
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.set_reuse_addr()
+        self.set_reuse_addr()       #在服务器没有正确关闭的情况下重用同一个地址
         self.bind(('', port))
         self.listen(5)
         self.name = name
@@ -163,7 +165,7 @@ class ChatServer(dispatcher):
         self.main_room = ChatRoom(self)
 
     def handle_accept(self):
-        conn,addr = self.accept()
+        conn,addr = self.accept()       #允许客户连接：返回一个连接（针对客户端的具体套接字）和一个地址（有关所连接计算机的信息）
         ChatSession(self, conn)
 
 if __name__ == '__main__':
