@@ -1,0 +1,4 @@
+from xmlrpclib import *
+mypeer = ServerProxy('http://localhost:4242')
+code,data = mypeer.query('test.txt')
+code
