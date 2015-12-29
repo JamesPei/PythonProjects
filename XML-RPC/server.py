@@ -14,29 +14,29 @@ MAX_HISTORY_LENGTH = 6
 UNHANDLED = 100
 ACCESS_DENIED = 200
 
-#±íÊ¾ÎŞ·¨´¦ÀíµÄ²éÑ¯Òì³£
+#è¡¨ç¤ºæ— æ³•å¤„ç†çš„æŸ¥è¯¢å¼‚å¸¸
 class UnhandledQuery(Fault):
     def __init__(self, message="couldn't handle the query"):
         Fault.__init__(self,UNHANDLED,message)
 
-#ÔÚÓÃ»§ÊÔÍ¼·ÃÎÊÎ´±»ÊÚÈ¨·ÃÎÊµÄ×ÊÔ´Ê±Òı·¢µÄÒì³£
+#å½“ç”¨æˆ·è¯•å›¾è®¿é—®æœªè¢«æˆæƒè®¿é—®çš„èµ„æºæ—¶å¼•å‘è¯¥å¼‚å¸¸
 class AccessDenied(Fault):
     def __init__(self,message="Access denied"):
         Fault.__init__(self,ACCESS_DENIED,message)
 
-#¼ì²é¸ø¶¨µÄÄ¿Â¼ÖĞÊÇ·ñÓĞ¸ø¶¨µÄÎÄ¼şÃû
+#æ£€æŸ¥ç»™å®šçš„ç›®å½•ä¸­æ˜¯å¦æœ‰ç»™å®šçš„æ–‡ä»¶å
 def inside(dir,name):
     dir = abspath(dir)
     name = abspath(name)
     return name.startswith(join(dir,''))
 
-#´ÓURLÖĞÌáÈ¡¶Ë¿Ú
+#ä»URLä¸­æå–ç«¯å£
 def getPort(url):
     name = urlparse(url)[1]
     parts = name.split(':')
     return int(parts[-1])
 
-#p2pÍøÂçÖĞµÄ½Úµã
+#p2pç½‘ç»œä¸­çš„èŠ‚ç‚¹
 class Node:
     def __init__(self,url,dirname,secret):
         self.url = url
@@ -44,7 +44,7 @@ class Node:
         self.secret = secret
         self.known = set()
 
-    #²éÑ¯ÎÄ¼ş£¬¿ÉÄÜ»áÏòÆäËüÒÑÖª½ÚµãÑ°Çó°ïÖú£¬½«ÎÄ¼ş×÷Îª×Ö·û´®·µ»Ø
+    #æŸ¥è¯¢æ–‡ä»¶ï¼Œå¯èƒ½ä¼šå‘å…¶å®ƒå·²çŸ¥èŠ‚ç‚¹å¯»æ±‚å¸®åŠ©ï¼Œå°†æ–‡ä»¶ä½œä¸ºå­—ç¬¦ä¸²è¿”å›
     def query(self,query,history=[]):
         try:
             code,data = self._handle(query)
@@ -53,12 +53,12 @@ class Node:
             if len(history) >= MAX_HISTORY_LENGTH:raise
             return self._broadcast(query,history)
 
-    #ÓÃÓÚ½«½Úµã½éÉÜ¸øÆäËü½Úµã
+    #ç”¨äºå°†èŠ‚ç‚¹ä»‹ç»ç»™å…¶å®ƒèŠ‚ç‚¹
     def hello(self,other):
         self.known.add(other)
         return 0
 
-    #ÓÃÓÚÈÃ½ÚµãÕÒµ½ÎÄ¼ş²¢ÇÒÏÂÔØ
+    #ç”¨äºè®©èŠ‚ç‚¹æ‰¾åˆ°æ–‡ä»¶å¹¶ä¸”ä¸‹è½½
     def fetch(self, query, secret):
         if secret != self.secret : raise
         result = self.query(query)
@@ -67,13 +67,13 @@ class Node:
         f.close()
         return 0
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚÆô¶¯XML_RPC·şÎñÆ÷
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå¯åŠ¨XML_RPCæœåŠ¡å™¨
     def _start(self):
         s = SimpleXMLRPCServer(("",getPort(self.url)), logRequests=False)
         s.register_instance(self)
         s.serve_forever()
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚ´¦ÀíÇëÇó
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå¤„ç†è¯·æ±‚
     def _handle(self,query):
         dir = self.dirname
         name = join(dir,query)
@@ -81,7 +81,7 @@ class Node:
         if not inside(dir,name):raise AccessDenied
         return open(name).read()
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚ½«²éÑ¯¹ã²¥µ½ËùÓĞÒÑÖªµÄNode
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå°†æŸ¥è¯¢å¹¿æ’­åˆ°æ‰€æœ‰å·²çŸ¥çš„Node
     def _broadcast(self, query, history):
         for other in self.known.copy():
             if other in history:continue
