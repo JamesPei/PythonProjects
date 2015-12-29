@@ -13,13 +13,13 @@ OK = 1
 FAIL = 2
 EMPTY = ''
 
-#´ÓURLÖĞÌáÈ¡¶Ë¿Ú
+#ä»URLä¸­æå–ç«¯å£
 def getPort(url):
     name = urlparse(url)[1]
     parts = name.split(':')
     return int(parts[-1])
 
-#p2pÍøÂçÖĞµÄ½Úµã
+#p2pç½‘ç»œä¸­çš„èŠ‚ç‚¹
 class Node:
 
     def __init__(self,url,dirname,secret):
@@ -28,7 +28,7 @@ class Node:
         self.secret = secret
         self.known = set()
 
-    #²éÑ¯ÎÄ¼ş£¬¿ÉÄÜ»áÏòÆäËüÒÑÖª½ÚµãÇëÇó°ïÖú¡£½«ÎÄ¼ş×÷Îª×Ö·û´®·µ»Ø
+    #æŸ¥è¯¢æ–‡ä»¶ï¼Œå¯èƒ½ä¼šå‘å…¶å®ƒå·²çŸ¥èŠ‚ç‚¹å¯»æ±‚å¸®åŠ©ï¼Œå°†æ–‡ä»¶ä½œä¸ºå­—ç¬¦ä¸²è¿”å›
     def query(self,query,history=[]):
         code,data = self._handle(query)
         if code == OK:
@@ -39,12 +39,12 @@ class Node:
                 return FAIL,EMPTY
             return self._broadcast(query,history)
 
-    #ÓÃÓÚ½«½Úµã½éÉÜ¸øÆäËü½Úµã
+    #ç”¨äºå°†èŠ‚ç‚¹ä»‹ç»ç»™å…¶å®ƒèŠ‚ç‚¹
     def hello(self,other):
         self.known.add(other)
         return OK
 
-    #ÓÃÓÚÈÃ½ÚµãÕÒµ½ÎÄ¼ş²¢ÏÂÔØ
+    #ç”¨äºè®©èŠ‚ç‚¹æ‰¾åˆ°æ–‡ä»¶å¹¶ä¸”ä¸‹è½½
     def fetch(self, query, secret):
         if secret != self.secret : return FAIL
         code,data = self.query(query)
@@ -56,21 +56,21 @@ class Node:
         else:
             return FAIL
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚÆô¶¯XML_RPC·şÎñÆ÷
-    def __start(self):
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå¯åŠ¨XML_RPCæœåŠ¡å™¨
+    def _start(self):
         s = SimpleXMLRPCServer(("",getPort(self.url)), logRequests=False)
         s.register_instance(self)
         s.serve_forever()
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚ´¦ÀíÇëÇó
-    def __handle(self,query):
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå¤„ç†è¯·æ±‚
+    def _handle(self,query):
         dir = self.dirname
         name = join(dir,query)
         if not isfile(name):return FAIL,EMPTY
         return OK,open(name).read()
 
-    #ÄÚ²¿Ê¹ÓÃ£¬ÓÃÓÚ½«²éÑ¯¹ã²¥µ½ËùÓĞÒÑÖªNode
-    def __broadcast(self, query, history):
+    #å†…éƒ¨ä½¿ç”¨ï¼Œç”¨äºå°†æŸ¥è¯¢å¹¿æ’­åˆ°æ‰€æœ‰å·²çŸ¥çš„Node
+    def _broadcast(self, query, history):
         for other in self.known.copy():
             if other in history:continue
             try:
@@ -86,7 +86,7 @@ class Node:
 def main():
     url,directory,secret = sys.argv[1:]
     n = Node(url, directory, secret)
-    n.__start()
+    n._start()
 
 if __name__=='__main__':main()
 
