@@ -19,7 +19,7 @@ class ListableNode(Node):
         return listdir(self.dirname)
 
 #主客户端类，用于设定GUI，启动为文件服务的Node
-class Client(wx.app):
+class Client(wx.App):
     def __init__(self, url, dirname, urlfile):
         #创建一个随机密码，使用这个密码实例化ListableNode,利用它的start方法(确保Thread是个无交互的后台程序，这样它会随着程序退出而退出)启动一个Thread,读取URL文件中的所有URL，并且将Node
         #介绍给这些URL，最后设置GUI
@@ -79,7 +79,7 @@ class Client(wx.app):
             if f.faultCode != UNHANDLED:raise
             print "Couldn't find the file",query
 
-def main(self):
+def main():
     urlfile,directory,url = sys.argv[1:]
     client = Client(url, directory, urlfile)
     client.MainLoop()
