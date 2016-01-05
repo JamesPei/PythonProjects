@@ -8,7 +8,7 @@ from random import randrange
 class SquishSprite(pygame.sprite.Sprite):
     def __init__(self,image):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image).convert()
+        self.image = pygame.image.load(image).convert_alpha()
         self.rect = self.image.get_rect()
         screen = pygame.display.get_surface()
         shrink = -config.margin * 2
@@ -16,7 +16,7 @@ class SquishSprite(pygame.sprite.Sprite):
 
 class Weight(SquishSprite):
     def __init__(self, speed):
-        SquishSprite.__init__(self, config.weight_image)
+        SquishSprite.__init__(self, config.Weight_image)
         self.speed = speed
         self.reset()
 
@@ -32,12 +32,12 @@ class Weight(SquishSprite):
 
 class Banana(SquishSprite):
     def __init__(self):
-        SquishSprite.__init__(self, config.banana_image)
+        SquishSprite.__init__(self, config.Banana_image)
         self.rect.bottom = self.area.bottom
         #在没有香蕉的部分进行填充
         #如果秤砣移动到了这些区域，它不会被判定为碰撞
-        self.pad_top = config.banana_pad_top
-        self.pad_side = config.banana_pad_side
+        self.pad_top = config.Banana_pad_top
+        self.pad_side = config.Banana_pad_side
 
     #将banana中心点的横坐标设定为当前鼠标指针的横坐标，并且使用rect的clamp方法确保banana停留在所允许的范围内
     def update(self):

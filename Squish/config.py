@@ -1,8 +1,9 @@
 #__author__ = 'James'
 #-*-coding:utf8-*-
 
-Banana_image = '1.png'
-Weight_image = '2.png'
+Banana_image = '2.png'
+Weight_image = '1.png'
+splash_image = '1.png'
 
 #外观设置
 Screen_size = 800,600
@@ -12,7 +13,7 @@ full_screen = 1
 font_size = 48
 
 #设置游戏的表现行为
-Drop_speed = 5
+Drop_speed = 1
 Banana_speed = 10
 Speed_increase = 1
 Weights_per_level = 10
