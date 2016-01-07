@@ -1,16 +1,18 @@
 #__author__ = 'James'
 #-*-coding:utf8-*-
-# Õâ¸ö½Å±¾×¨ÎªpygameÓÅ»¯£¬Ê¹ÓÃpy2exe´ò°ü´úÂëºÍ×ÊÔ´ÖÁdistÄ¿Â¼
+
+# è¿™ä¸ªè„šæœ¬ä¸“ä¸ºpygameä¼˜åŒ–ï¼Œä½¿ç”¨py2exeæ‰“åŒ…ä»£ç å’Œèµ„æºè‡³distç›®å½•
 #
-# Ê¹ÓÃÖĞÈôÓĞÎÊÌâ£¬¿ÉÒÔÁôÑÔÖÁ£º
+# ä½¿ç”¨ä¸­è‹¥æœ‰é—®é¢˜ï¼Œå¯ä»¥ç•™è¨€è‡³ï¼š
 #  //eyehere.net/2011/python-pygame-novice-professional-py2exe/
 #
-# °²×°ĞèÇó:
-#         python, pygame, py2exe ¶¼Ó¦¸Ã×°ÉÏ
-# Ê¹ÓÃ·½·¨:
-#         1: ĞŞ¸Ä´ËÎÄ¼ş£¬Ö¸¶¨ĞèÒª´ò°üµÄ.pyºÍ¶ÔÓ¦Êı¾İ
+# å®‰è£…éœ€æ±‚:
+#         python, pygame, py2exe éƒ½åº”è¯¥è£…ä¸Š
+
+# ä½¿ç”¨æ–¹æ³•:
+#         1: ä¿®æ”¹æ­¤æ–‡ä»¶ï¼ŒæŒ‡å®šéœ€è¦æ‰“åŒ…çš„.pyå’Œå¯¹åº”æ•°æ®
 #         2: python pygame2exe.py
-#         3: ÔÚdistÎÄ¼ş¼ĞÖĞ£¬enjoy it~
+#         3: åœ¨distæ–‡ä»¶å¤¹ä¸­ï¼Œenjoy it~
 
 try:
     from distutils.core import setup
@@ -21,66 +23,66 @@ try:
 except ImportError, message:
     raise SystemExit,  "Sorry, you must install py2exe, pygame. %s" % message
 
-# Õâ¸öº¯ÊıÊÇÓÃÀ´ÅĞ¶ÏDLLÊÇ·ñÊÇÏµÍ³Ìá¹©µÄ£¨ÊÇµÄ»°¾Í²»ÓÃ´ò°ü£©
+# è¿™ä¸ªå‡½æ•°æ˜¯ç”¨æ¥åˆ¤æ–­DLLæ˜¯å¦æ˜¯ç³»ç»Ÿæä¾›çš„ï¼ˆæ˜¯çš„è¯å°±ä¸ç”¨æ‰“åŒ…ï¼‰
 origIsSystemDLL = py2exe.build_exe.isSystemDLL
 def isSystemDLL(pathname):
-    # ĞèÒªhackÒ»ÏÂ£¬freetypeºÍoggµÄdll²¢²»ÊÇÏµÍ³DLL
+    # éœ€è¦hackä¸€ä¸‹ï¼Œfreetypeå’Œoggçš„dllå¹¶ä¸æ˜¯ç³»ç»ŸDLL
     if os.path.basename(pathname).lower() in ("libfreetype-6.dll", "libogg-0.dll", "sdl_ttf.dll"):
         return 0
     return origIsSystemDLL(pathname)
-# °ÑHack¹ıµÄº¯ÊıÖØĞÂĞ´»ØÈ¥
+# æŠŠHackè¿‡çš„å‡½æ•°é‡æ–°å†™å›å»
 py2exe.build_exe.isSystemDLL = isSystemDLL
 
-# Õâ¸öĞÂµÄÀàÒ²ÊÇÒ»¸öHack£¬Ê¹µÃpygameµÄÄ¬ÈÏ×ÖÌå»á±»¿½±´
+# è¿™ä¸ªæ–°çš„ç±»ä¹Ÿæ˜¯ä¸€ä¸ªHackï¼Œä½¿å¾—pygameçš„é»˜è®¤å­—ä½“ä¼šè¢«æ‹·è´
 class pygame2exe(py2exe.build_exe.py2exe):
     def copy_extensions(self, extensions):
-        # »ñµÃpygameÄ¬ÈÏ×ÖÌå
+        # è·å¾—pygameé»˜è®¤å­—ä½“
         pygamedir = os.path.split(pygame.base.__file__)[0]
         pygame_default_font = os.path.join(pygamedir, pygame.font.get_default_font())
-        # ¼ÓÈë¿½±´ÎÄ¼şÁĞ±í
+        # åŠ å…¥æ‹·è´æ–‡ä»¶åˆ—è¡¨
         extensions.append(Module("pygame.font", pygame_default_font))
         py2exe.build_exe.py2exe.copy_extensions(self, extensions)
 
-# Õâ¸öÀàÊÇÎÒÃÇÕæÕı×öÊÂÇéµÄ²¿·Ö
+# è¿™ä¸ªç±»æ˜¯æˆ‘ä»¬çœŸæ­£åšäº‹æƒ…çš„éƒ¨åˆ†
 class BuildExe:
     def __init__(self):
         #------------------------------------------------------#
-        ##### ¶ÔÓÚÒ»¸öĞÂµÄÓÎÏ·³ÌĞò£¬ĞèÒªĞŞ¸ÄÕâÀïµÄ¸÷¸ö²ÎÊı #####
+        ##### å¯¹äºä¸€ä¸ªæ–°çš„æ¸¸æˆç¨‹åºï¼Œéœ€è¦ä¿®æ”¹è¿™é‡Œçš„å„ä¸ªå‚æ•° #####
         #------------------------------------------------------#
 
-        # ÆğÊ¼pyÎÄ¼ş
+        # èµ·å§‹pyæ–‡ä»¶
         self.script = "squish.py"
-        # ÓÎÏ·Ãû
+        # æ¸¸æˆå
         self.project_name = "FirstPygameDemo"
-        # ÓÎÏ·site
-        #self.project_url = "about:none"
-        # ÓÎÏ·°æ±¾
+        # æ¸¸æˆç‰ˆæœ¬
+        self.project_url = "about:none"
+        # æ¸¸æˆç‰ˆæœ¬
         self.project_version = "0.0"
-        # ÓÎÏ·Ğí¿É
-        #self.license = "MyGames License"
-        # ÓÎÏ·×÷Õß
+        # æ¸¸æˆè®¸å¯
+        self.license = "MyGames License"
+        # æ¸¸æˆä½œè€…
         self.author_name = "James.Pei"
-        # ÁªÏµµçÓÊ
-        #self.author_email = "blog@eyehere.net"
-        # ÓÎÏ·°æÈ¨
-        #self.copyright = "Copyright (c) 3000 xishui."
-        # ÓÎÏ·ÃèÊö
-        #self.project_description = "MyGames Description"
-        # ÓÎÏ·Í¼±ê(NoneµÄ»°Ê¹ÓÃpygameµÄÄ¬ÈÏÍ¼±ê)
-        #self.icon_file = None
-        # ¶îÍâĞèÒª¿½±´µÄÎÄ¼ş¡¢ÎÄ¼ş¼Ğ(Í¼Æ¬£¬ÒôÆµµÈ)
+        # è”ç³»ç”µé‚®
+        self.author_email = "im7sea@gmail.com"
+        # æ¸¸æˆç‰ˆæƒ
+        self.copyright = "Copyright (c) 3000 James.Pei."
+        # æ¸¸æˆæè¿°
+        self.project_description = "MyGames Description"
+        # æ¸¸æˆå›¾æ ‡(Noneçš„è¯ä½¿ç”¨pygameçš„é»˜è®¤å›¾æ ‡)
+        self.icon_file = None
+        # é¢å¤–éœ€è¦æ‹·è´çš„æ–‡ä»¶ã€æ–‡ä»¶å¤¹(å›¾ç‰‡ï¼ŒéŸ³é¢‘ç­‰)
         self.extra_datas = []
-        # ¶îÍâĞèÒªµÄpython¿âÃû
+        # é¢å¤–éœ€è¦çš„pythonåº“å
         self.extra_modules = []
-        # ĞèÒªÅÅ³ıµÄpython¿â
+        # éœ€è¦æ’é™¤çš„pythonåº“
         self.exclude_modules = []
-        # ¶îÍâĞèÒªÅÅ³ıµÄdll
+        # é¢å¤–éœ€è¦æ’é™¤çš„dll
         self.exclude_dll = ['']
-        # ĞèÒª¼ÓÈëµÄpyÎÄ¼ş
+        # éœ€è¦åŠ å…¥çš„pyæ–‡ä»¶
         self.extra_scripts = []
-        # ´ò°üZipÎÄ¼şÃû(NoneµÄ»°£¬´ò°üµ½exeÎÄ¼şÖĞ)
+        # æ‰“åŒ…Zipæ–‡ä»¶å(Noneçš„è¯ï¼Œæ‰“åŒ…åˆ°exeæ–‡ä»¶ä¸­)
         self.zipfile_name = None
-        # Éú³ÉÎÄ¼ş¼Ğ
+        # ç”Ÿæˆæ–‡ä»¶å¤¹
         self.dist_dir ='dist'
 
     def opj(self, *args):
@@ -88,9 +90,9 @@ class BuildExe:
         return os.path.normpath(path)
 
     def find_data_files(self, srcdir, *wildcards, **kw):
-        # ´ÓÔ´ÎÄ¼ş¼ĞÄÚ»ñÈ¡ÎÄ¼ş
+        # ä»æºæ–‡ä»¶å¤¹å†…è·å–æ–‡ä»¶
         def walk_helper(arg, dirname, files):
-            # µ±È»ÄãÊ¹ÓÃÆäËûµÄ°æ±¾¿ØÖÆ¹¤¾ßÊ²Ã´µÄ£¬Ò²¿ÉÒÔ¼Ó½øÀ´
+            # å½“ç„¶ä½ ä½¿ç”¨å…¶ä»–çš„ç‰ˆæœ¬æ§åˆ¶å·¥å…·ä»€ä¹ˆçš„ï¼Œä¹Ÿå¯ä»¥åŠ è¿›æ¥
             if '.svn' in dirname:
                 return
             names = []
@@ -116,15 +118,15 @@ class BuildExe:
         return file_list
 
     def run(self):
-        if os.path.isdir(self.dist_dir): # É¾³ıÉÏ´ÎµÄÉú³É½á¹û
+        if os.path.isdir(self.dist_dir): # åˆ é™¤ä¸Šæ¬¡çš„ç”Ÿæˆç»“æœ
             shutil.rmtree(self.dist_dir)
 
-        # »ñµÃÄ¬ÈÏÍ¼±ê
+        # è·å¾—é»˜è®¤å›¾æ ‡
         if self.icon_file == None:
             path = os.path.split(pygame.__file__)[0]
             self.icon_file = os.path.join(path, 'pygame.ico')
 
-        # »ñµÃĞèÒª´ò°üµÄÊı¾İÎÄ¼ş
+        # è·å¾—éœ€è¦æ‰“åŒ…çš„æ•°æ®æ–‡ä»¶
         extra_datas = []
         for data in self.extra_datas:
             if os.path.isdir(data):
@@ -132,7 +134,7 @@ class BuildExe:
             else:
                 extra_datas.append(('.', [data]))
 
-        # ¿ªÊ¼´ò°üexe
+        # å¼€å§‹æ‰“åŒ…exe
         setup(
             cmdclass = {'py2exe': pygame2exe},
             version = self.project_version,
@@ -143,7 +145,7 @@ class BuildExe:
             author_email = self.author_email,
             license = self.license,
 
-            # Ä¬ÈÏÉú³É´°¿Ú³ÌĞò£¬Èç¹ûĞèÒªÉú³ÉÖÕ¶Ë³ÌĞò(debug½×¶Î)£¬Ê¹ÓÃ£º
+            # é»˜è®¤ç”Ÿæˆçª—å£ç¨‹åºï¼Œå¦‚æœéœ€è¦ç”Ÿæˆç»ˆç«¯ç¨‹åº(debugé˜¶æ®µ)ï¼Œä½¿ç”¨ï¼š
             # console = [{
             windows = [{
                 'script': self.script,
@@ -161,7 +163,7 @@ class BuildExe:
             data_files = extra_datas,
             )
 
-        if os.path.isdir('build'): # Çå³ıbuildÎÄ¼ş¼Ğ
+        if os.path.isdir('build'):  # æ¸…é™¤buildæ–‡ä»¶å¤¹
             shutil.rmtree('build')
 
 if __name__ == '__main__':

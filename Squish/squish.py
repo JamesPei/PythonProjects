@@ -1,11 +1,11 @@
 #__author__ = 'James'
 #-*-coding:utf8-*-
 
-import os,sys,pygame
+import os, sys, pygame
 from pygame.locals import *
 import objects,config
-import  msvcrt
-import threading
+# import  msvcrt
+# import threading
 
 #该模块包括Squish游戏的主要游戏逻辑
 
