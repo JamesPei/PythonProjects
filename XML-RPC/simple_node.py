@@ -65,7 +65,8 @@ class Node:
     #内部使用，用于处理请求
     def _handle(self,query):
         dir = self.dirname
-        name = join(dir,query)
+        name = 'F:\\'+join(dir,query)
+        print '....the file path:',name
         if not isfile(name):return FAIL,EMPTY
         return OK,open(name).read()
 
