@@ -81,7 +81,6 @@ class Node:
                     return  code,data
             except:
                 self.known.remove(other)
-
         return FAIL,EMPTY
 
 def main():
