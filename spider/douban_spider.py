@@ -38,7 +38,7 @@ class DoubanSpider(BaseSpider):
         #movie_desc = hxs.select('//*[@id="content"]/div/div[1]/div[2]/table[1]/tr/td[2]/div/p/text()').extract()
 
         if movie_link:
-            yield Request(movie_link[0],callback=self.parse_item)
+            yield Request(movie_link[0], callback=self.parse_item)
 
     def parse_item(self,response):
         hxs = HtmlXPathSelector(response)
