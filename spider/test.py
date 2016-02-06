@@ -1,15 +1,10 @@
 #__author__ = 'JamesPei'
 #-*-coding:utf-8-*-
 
-import sys
+import sys, types
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
-from scrapy.spider import BaseSpider
-from scrapy.http import Request
 from scrapy.selector import HtmlXPathSelector, Selector
-import re
-import binascii
 
 html = '''
 <div id="maptabbox01" style="display: none;" class="maptabboxin">
@@ -46,7 +41,9 @@ html = '''
 	</div>
 '''
 
-list1 = Selector(text=html).xpath('//div[@id="maptabbox02"]/ul/li/a/text()').extract()
+# list1 = Selector(text=html).xpath('//div[@id="maptabbox01"]/ul/li/a/text()').extract()
+list1 = Selector(text=html).xpath('//div[@id="maptabbox01"]/ul/li/a/@href').extract()
 print list1
 for str in list1:
+    print type(str)
     print str.decode('utf-8')

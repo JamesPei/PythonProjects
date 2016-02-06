@@ -76,7 +76,7 @@ class DoubanSpider(BaseSpider):
         movie_detail_str = ''.join(movie_detail).strip()
 
         movie_language_str = ".*语言:</span> (.+?)<br><span.*".decode("utf8")
-        movie_date_str = ".*上映日期:</span> <span property=\"v:initialReleaseDate\" content=\"(\S+?)\">(\S+?)</span>.*".decode("utf8")
+        movie_date_str = ".*上映日期:</span> <span property=\"v:initweatherSpider.pyialReleaseDate\" content=\"(\S+?)\">(\S+?)</span>.*".decode("utf8")
         movie_long_str = ".*片长:</span> <span property=\"v:runtime\" content=\"(\d+).*".decode("utf8")
 
         pattern_language =re.compile(movie_language_str,re.S)
