@@ -41,9 +41,27 @@ html = '''
 	</div>
 '''
 
+detail='''<p title="多云" class="wea">多云</p>
+<p class="tem">
+<span>4</span>/<i>-4℃</i>
+</p>
+<p class="win">
+<em>
+<span title="北风" class="N"></span>
+<span title="西风" class="W"></span>
+</em>
+<i>4-5级转微风</i>
+</p>
+'''
+
 # list1 = Selector(text=html).xpath('//div[@id="maptabbox01"]/ul/li/a/text()').extract()
-list1 = Selector(text=html).xpath('//div[@id="maptabbox01"]/ul/li/a/@href').extract()
-print list1
-for str in list1:
-    print type(str)
-    print str.decode('utf-8')
+# list1 = Selector(text=html).xpath('//div[@id="maptabbox01"]/ul/li/a/@href').extract()
+# print list1
+# for str in list1:
+#     print type(str)
+#     print str.decode('utf-8')
+
+max = Selector(text=detail).xpath('//p[@class="tem"]/span/text()').extract_first()
+min = Selector(text=detail).xpath('//p[@class="tem"]/i/text()').extract_first()
+print max, min
+
