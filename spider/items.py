@@ -19,4 +19,3 @@ class rocheItem(scrapy.Item):
     compound = scrapy.Field()
     indication = scrapy.Field()
     expectedFiling = scrapy.Field()
-    pass
