@@ -84,7 +84,7 @@ class Node:
         return FAIL,EMPTY
 
 def main():
-    url,directory,secret = sys.argv[1:]
+    url,directory,secret = sys.argv[1:]    #用来获取命令行参数，sys.argv[0]表示代码本身文件路径，所以参数从1开始
     n = Node(url, directory, secret)
     n._start()
 
