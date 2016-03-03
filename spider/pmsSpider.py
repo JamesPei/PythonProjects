@@ -44,5 +44,5 @@ class PmsSpider(Spider):
             item['indication'] = Indication
             item['expectedFiling'] = ExpectedFiling
 
-            yield rocheItem
+            yield item
 
