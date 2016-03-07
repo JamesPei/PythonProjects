@@ -3,7 +3,7 @@
 
 class SortingAlgorithms:
 
-    #侏儒排序
+    #侏儒排序：时间复杂度Ω（n)到O(n**2)
     def gnomesort(self,seq):
         i=0
         while i < len(seq):
@@ -14,7 +14,7 @@ class SortingAlgorithms:
                 i -= 1
         return seq
 
-    #归并排序
+    #归并排序：时间复杂度Θ（nlgn）
     def mergesort(self, seq):
         mid = len(seq)//2
         lft, rgt = seq[:mid],seq[mid:]
