@@ -21,6 +21,7 @@ def cover(board, lab=1, top=0, left=0, side=None):
 
     # Next label:
     lab += 1
+    print 's:',s
     if s>1:
         for dy in [0,s]:
             for dx in [0,s]:
