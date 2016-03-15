@@ -53,4 +53,4 @@ class SortingAlgorithms:
 # b = SortingAlgorithms().mergesort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
 # print  a
 # print  b
-print SortingAlgorithms().leavecircle(10,3)
+# print SortingAlgorithms().leavecircle(10,3)
