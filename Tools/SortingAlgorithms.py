@@ -1,5 +1,7 @@
 #__author__ = 'James'
 #-*- coding:utf-8 -*-
+import random
+
 
 class SortingAlgorithms:
 
@@ -29,6 +31,23 @@ class SortingAlgorithms:
         res.reverse()
         return (lft or rgt) + res
 
+    #计数排序：假设n个输入元素中每一个都是介于0到k之间的整数，此处k为某个整数。当k=O(n)时，计数排序的运行时间为Θ(n)
+    #http://www.knowsky.com/884995.html
+    def countingSort(self, alist, k):
+        n = len(alist)
+        b = [0 for i in xrange(n)]
+        c = [0 for i in xrange(k+1)]
+        for i in alist:
+            c[i] += 1
+        for i in xrange(1, len(c)):
+            c[i] = c[i-1] + c[i]
+        for i in alist:
+            b[c[i]-1] = i
+            c[i] -= 1
+        return b
+
+    # 基数排序
+
     #约瑟夫出圈
     def leavecircle(self, total, num):
         a = [i+1 for i in range(total)]
@@ -54,3 +73,5 @@ class SortingAlgorithms:
 # print  a
 # print  b
 # print SortingAlgorithms().leavecircle(10,3)
+
+print SortingAlgorithms().countingSort([random.randint(0,100) for i in xrange(100)], 100)
