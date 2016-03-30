@@ -46,7 +46,52 @@ class SortingAlgorithms:
             c[i] -= 1
         return b
 
-    # 基数排序
+    # 桶排序,时间O(M+N)M:桶的个数，N:数组长度
+    def bucketSort(self, oldlist):
+        _max=oldlist[0]     #数组中最大值
+        for i in oldlist:
+            if i>_max:
+                _max=i
+        _min=oldlist[0]     #数组中最小值
+        for i in oldlist:
+            if i<_min:
+                _min=i
+
+        s=[0 for i in xrange(_min,_max+1)]
+        for i in oldlist:
+            s[i-_min]+=1
+        current=_min
+        n=0
+        for i in s:
+            while i>0:
+                oldlist[n]=current
+                i-=1
+                n+=1
+            current+=1
+
+    # 区间[0,1)均匀分布的桶排序
+    def sort(self,a):
+        n=len(a)
+        s=[[] for i in xrange(n)]
+        for i in a:
+            s[int(i*n)].append(i)
+        for i in s:
+            self.insertSort(i)
+
+    def insertSort(self,a):
+        n=len(a)
+        if n<=1:
+            pass
+        for i in range(1,n):
+            key=a[i]
+            j=i-1
+            while key<a[j] and j>=0:
+                a[j+1]=a[j]
+                j-=1
+            a[j+1]=key
+
+    #基数排序
+
 
     #约瑟夫出圈
     def leavecircle(self, total, num):
