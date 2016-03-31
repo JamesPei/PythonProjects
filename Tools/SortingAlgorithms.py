@@ -31,7 +31,7 @@ class SortingAlgorithms:
         res.reverse()
         return (lft or rgt) + res
 
-    #计数排序：假设n个输入元素中每一个都是介于0到k之间的整数，此处k为某个整数。当k=O(n)时，计数排序的运行时间为Θ(n)
+    #计数排序：当输入的元素是 n 个 0 到 k 之间的整数时，时间复杂度是 Θ(n + k)
     #http://www.knowsky.com/884995.html
     def countingSort(self, alist, k):
         n = len(alist)
@@ -46,7 +46,9 @@ class SortingAlgorithms:
             c[i] -= 1
         return b
 
-    # 桶排序,时间O(M+N)M:桶的个数，N:数组长度
+    # 对于N个待排数据，M个桶，平均每个桶[N/M]个数据的桶排序平均时间复杂度为：O(N+N*logN-N*logM)
+    # 当N=M时，即极限情况下每个桶只有一个数据时。桶排序的最好效率能够达到O(N)
+    # 桶排序的缺点：空间复杂度大,即内存占用大
     def bucketSort(self, oldlist):
         _max=oldlist[0]     #数组中最大值
         for i in oldlist:
@@ -75,14 +77,15 @@ class SortingAlgorithms:
         s=[[] for i in xrange(n)]
         for i in a:
             s[int(i*n)].append(i)
-        for i in s:
+        for i in s: #分别对每个桶进行排序
             self.insertSort(i)
+        return [i for j in s for i in j]
 
     def insertSort(self,a):
         n=len(a)
         if n<=1:
             pass
-        for i in range(1,n):
+        for i in range(1,n):    # O(n)级排序
             key=a[i]
             j=i-1
             while key<a[j] and j>=0:
@@ -91,6 +94,14 @@ class SortingAlgorithms:
             a[j+1]=key
 
     #基数排序
+    def radixSort(self):
+        A = [random.randint(1, 9999) for i in xrange(10000)]
+        for k in xrange(4): #四轮排序
+            s = [[] for i in xrange(10)]
+            for i in A:
+                s[i/(10**k)%10].append(i)
+            A = [a for b in s for a in b]
+        return A
 
 
     #约瑟夫出圈
