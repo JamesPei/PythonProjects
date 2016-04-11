@@ -2,7 +2,6 @@
 #-*- coding:utf-8 -*-
 import random
 
-
 class SortingAlgorithms:
 
     #侏儒排序：时间复杂度Ω（n)到O(n**2)
@@ -104,7 +103,7 @@ class SortingAlgorithms:
         return A
 
 
-    #约瑟夫出圈
+    #出圈问题
     def leavecircle(self, total, num):
         a = [i+1 for i in range(total)]
         i = 0
@@ -122,7 +121,6 @@ class SortingAlgorithms:
                     i += 1
             else:
                 i += 1
-
 
 # a = SortingAlgorithms().gnomesort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
 # b = SortingAlgorithms().mergesort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
