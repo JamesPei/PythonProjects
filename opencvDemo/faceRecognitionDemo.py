@@ -5,8 +5,10 @@ import cv2
 import sys
 
 # Get user supplied values
-imagePath = sys.argv[1]
-cascPath = sys.argv[2]
+# imagePath = sys.argv[1]
+imagePath = '1.jpg'
+# cascPath = sys.argv[2]
+cascPath = 'haarcascade_frontalface_default.xml'
 
 # Create the haar cascade
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -32,3 +34,5 @@ for (x, y, w, h) in faces:
 
 cv2.imshow(str(len(faces))+" Faces found", image)
 cv2.waitKey(0)
+
+
