@@ -1,10 +1,9 @@
 #__author__ = 'James'
 #-*-coding:utf-8-*-
 
-#遍历一个表示为邻接集的图结构的连通分量
 from collections import deque
 
-
+#遍历一个表示为邻接集的图结构的连通分量
 def walk(G, s, S=set()):
     P, Q = dict(), set()
     P[s] = None
@@ -136,7 +135,7 @@ def scc(G):
 G={0:{1,2,3,4,5},1:{0,2,4},2:{0,1,3,5},3:{0,2,4},4:{0,1,3,5},5:{0,2,4,6,7},6:{5,7},7:{5,6},8:{9,10},9:{8,10},10:{8,9}}
 # G2 = {'a':('b','f'),'b':('c','d','f'),'c':('d'),'d':('e','f'),'e':('f'),'f':()}
 # print components(G)
-print walk(G, 2)
+print walk(G, 1)
 # rec_dfs(G,2)
 # print list(iter_dfs(G,2))
 # print dfs_topsort(G2)
