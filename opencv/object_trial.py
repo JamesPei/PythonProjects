@@ -4,7 +4,7 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture(0)  #必须显式的指定要开启的摄像头，如果只有一个设想头则设为0
+cap = cv2.VideoCapture()
 
 while(1):
     # 获取每一帧
