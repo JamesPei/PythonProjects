@@ -2,6 +2,8 @@
 #-*-coding:utf-8
 
 import cv2
+import numpy as np
+from kNN import main_predict
 
 class PosImage(object):
     def __init__(self, pos, image):
@@ -33,18 +35,57 @@ def thresholding_inv(gray):
 def rearrange(images):
     return sorted(images, cmp=lambda x, y:cmp(x.get_position()[0], y.get_position()[0]))
 
+def predict(letter):
+    trainingData = np.load('knn_data.npz')
+    train = trainingData['train']
+    trainLabels = trainingData['train_labels']
+
+    knn = cv2.KNearest()
+    knn.train(train, trainLabels)
+
+    letter = np.float32(letter)
+
+    ret, result, neighbors, dist = knn.find_nearest(letter, k=5)
+    return result
+
+
 image = thresholding_inv(gray)
+
 # 轮廓检测
-_im_, contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+# cv2.drawContours(img, contours, 2, (0,255,0), 1)
+cnt = contours[0]
+cnt1 = contours[1]
+cnt2 = contours[2]
 
-# cropped = gray[y:y+h, x:x+w]
-# resized = cv2.resize(cropped, (20, 20))
-# cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 3)
-# pos_image = PosImage((x, y), resized)
-# images.append(pos_image)
+x,y,w,h = cv2.boundingRect(cnt)
+cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0), 1)
+x1,y1,w1,h1 = cv2.boundingRect(cnt1)
+cv2.rectangle(img,(x1,y1),(x1+w1,y1+h1),(0,255,0), 1)
+x2,y2,w2,h2 = cv2.boundingRect(cnt2)
+cv2.rectangle(img,(x2,y2),(x2+w2,y2+h2),(0,255,0), 1)
 
-name = 'test'
-cv2.namedWindow(name)
-cv2.imshow(name, image)
+cropped = image[y:y+h, x:x+w]
+resized = cv2.resize(cropped, (20, 20))
+letter = resized.reshape(-1,400).astype(np.float32)
+pred = predict(letter)
+# main_predict(letter)
+
+cropped1 = image[y1:y1+h1, x1:x1+w1]
+resized1 = cv2.resize(cropped1, (20, 20))
+letter1 = resized1.reshape(-1,400).astype(np.float32)
+pred1 = predict(letter1)
+
+cropped2 = image[y2:y2+h2, x2:x2+w2]
+resized2 = cv2.resize(cropped2, (20, 20))
+letter2 = resized2.reshape(-1,400).astype(np.float32)
+pred2 = predict(letter2)
+
+font = cv2.FONT_HERSHEY_SIMPLEX
+cv2.putText(img, str(pred[0][0]), (x,y), font, 0.5, (0,0,255),1)
+cv2.putText(img, str(pred1[0][0]), (x1,y1), font, 0.5, (0,0,255),1)
+cv2.putText(img, str(pred2[0][0]), (x2,y2), font, 0.5, (0,0,255),1)
+
+cv2.imshow('ori', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
