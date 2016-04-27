@@ -1,69 +1,74 @@
-# __author__ = 'James'
-# -*-coding:utf-8
+#__author__ = 'James'
+#-*-coding:utf-8
 
-#########################################
-# http://blog.csdn.net/zouxy09/article/details/16955347
-# kNN: k Nearest Neighbors
+import numpy as np
+# from detect_numbers import predict
+import cv2
 
-# Input:      newInput: vector to compare to existing dataset (1xN)
-#             dataSet:  size m data set of known vectors (NxM)
-#             labels: 	data set labels (1xM vector)
-#             k: 		number of neighbors to use for comparison
+knn = cv2.KNearest()    # 如果是opencv3则在此处不同
 
-# Output:     the most popular class label
-#########################################
+def predict_old():
+    img = cv2.imread('digits.png')
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
-from numpy import *
+    # now we split the image to 5000 cells, each 20*20 size
+    cells = [np.hsplit(row, 100) for row in np.vsplit(gray,50)]
 
-# create a dataset which contains 4 samples with 2 classes
-def createDataSet():
-    # create a matrix: each row as a sample
-    group = array([[1.0, 0.9], [1.0, 1.0], [0.1, 0.2], [0.0, 0.1]])
-    labels = ['A', 'A', 'B', 'B']  # four samples and two classes
-    return group, labels
+    # Make it into a Numpy array. It size will be (50,100,20,20)
+    x = np.array(cells)
 
-# classify using kNN
-def kNNClassify(newInput, dataSet, labels, k):
-    numSamples = dataSet.shape[0]  # shape[0] stands for the num of row
+    # now we prepare train_data and test_data
+    train = x[:,:50].reshape(-1,400).astype(np.float32)     #Gives a new shape to an array without changing its data.
+    if test==None: test = x[:, 50:100].reshape(-1,400).astype(np.float32)
+    # create labels for train and test data
+    k = np.arange(10)
 
-    ## step 1: calculate Euclidean distance
-    # tile(A, reps): Construct an array by repeating A reps times
-    # the following copy numSamples rows for dataSet
-    diff = tile(newInput, (numSamples, 1)) - dataSet  # Subtract element-wise: tile(A,n)功能是将数组A重复n次，构成一个新的数组
-    squaredDiff = diff ** 2  # squared for the subtract
-    squaredDist = sum(squaredDiff, axis=1)  # sum is performed by row
-    distance = squaredDist ** 0.5
+    train_labels = np.repeat(k,250)[:, np.newaxis]  # Repeat elements of an array.
+    test_labels = train_labels.copy()
 
-    ## step 2: sort the distance
-    # argsort() returns the indices that would sort an array in a ascending order
-    sortedDistIndices = argsort(distance)
-
-    classCount = {}  # define a dictionary (can be append element)
-    for i in xrange(k):
-        ## step 3: choose the min k distance
-        voteLabel = labels[sortedDistIndices[i]]
-
-        ## step 4: count the times labels occur
-        # when the key voteLabel is not in dictionary classCount, get()
-        # will return 0
-        classCount[voteLabel] = classCount.get(voteLabel, 0) + 1
-
-    ## step 5: the max voted class will return
-    maxCount = 0
-    for key, value in classCount.items():
-        if value > maxCount:
-            maxCount = value
-            maxIndex = key
-
-    return maxIndex
+    #cv2.KNearest.find_nearest(samples, k[, results[, neighborResponses[, dists]]]) → retval, results, neighborResponses, dists
+    ret,result,neighbours,dist = knn.find_nearest(test.reshape(-1,400).astype(np.float32),k=5)
+    print '2-----:',result
 
 
-dataSet, labels = createDataSet()
-testX = array([1.2, 1.0])
-k = 3
-outputLabel = kNNClassify(testX, dataSet, labels, 3)
-print "Your input is:", testX, "and classified to class: ", outputLabel
+    # Now we check the accuracy of classification
+    # For that, compare the result with test_labels and check which are wrong
+    matches = result==test_labels
+    correct = np.count_nonzero(matches) # Counts the number of non-zero values in the array a.
 
-testX = array([0.1, 0.3])
-outputLabel = kNNClassify(testX, dataSet, labels, 3)
-print "Your input is:", testX, "and classified to class: ", outputLabel
+    accuracy = correct*100.0/result.size
+    print 'accuracy:',accuracy
+
+    np.savez('knn_data.npz',train=train,train_labels=train_labels)
+
+
+def train():
+    img = cv2.imread('digits.png')
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    # now we split the image to 5000 cells, each 20*20 size
+    cells = [np.hsplit(row, 100) for row in np.vsplit(gray,50)]
+
+    # Make it into a Numpy array. It size will be (50,100,20,20)
+    x = np.array(cells)
+
+    # now we prepare train_data and test_data
+    train = x[:,:].reshape(-1,400).astype(np.float32)     #Gives a new shape to an array without changing its data.
+    k = np.arange(10)
+
+    train_labels = np.repeat(k,500)[:, np.newaxis]  # Repeat elements of an array.
+
+    #initiate kNN, train the data, then test it with test data for k=1
+    knn.train(train,train_labels)
+
+    np.savez('knn_data.npz',train=train,train_labels=train_labels)
+
+def main_predict(test):
+    #cv2.KNearest.find_nearest(samples, k[, results[, neighborResponses[, dists]]]) → retval, results, neighborResponses, dists
+    train()
+    ret,result,neighbours,dist = knn.find_nearest(test.reshape(-1,400).astype(np.float32),k=5)
+    print '2-----:',result
+
+if __name__=='__main__':
+    # main_predict(None)
+    train()
