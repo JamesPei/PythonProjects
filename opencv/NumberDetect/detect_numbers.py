@@ -3,21 +3,19 @@
 
 import cv2
 import numpy as np
-from kNN import main_predict
 
-class PosImage(object):
-    def __init__(self, pos, image):
-        self.pos = pos
-        self.image = image
+font = cv2.FONT_HERSHEY_SIMPLEX
 
-    def get_position(self):
-        return self.pos
+def detect_numbers(original_image=None):
+    if not original_image:img = cv2.imread('2.jpg')
+    else: img = cv2.imread(original_image)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    image = thresholding_inv(gray)
+    resizeds = detect_contours(img, image, 0.2) #img:原图, image:阈值处理后的图, 0.2：缩放比例
 
-    def get_image(self):
-        return self.image
-
-img = cv2.imread('number.png')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    cv2.imshow('result', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 # 二值图转换并做中值模糊
 def thresholding_inv(gray):
@@ -32,9 +30,7 @@ def thresholding_inv(gray):
 
     return bin
 
-def rearrange(images):
-    return sorted(images, cmp=lambda x, y:cmp(x.get_position()[0], y.get_position()[0]))
-
+#图像识别
 def predict(letter):
     trainingData = np.load('knn_data.npz')
     train = trainingData['train']
@@ -46,46 +42,43 @@ def predict(letter):
     letter = np.float32(letter)
 
     ret, result, neighbors, dist = knn.find_nearest(letter, k=5)
+    print '预测结果:',result
     return result
 
-
-image = thresholding_inv(gray)
-
 # 轮廓检测
-contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-# cv2.drawContours(img, contours, 2, (0,255,0), 1)
-cnt = contours[0]
-cnt1 = contours[1]
-cnt2 = contours[2]
+def detect_contours(img, image, scale):
+    contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # cv2.drawContours(img, contours, 2, (0,255,0), 1)
 
-x,y,w,h = cv2.boundingRect(cnt)
-cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0), 1)
-x1,y1,w1,h1 = cv2.boundingRect(cnt1)
-cv2.rectangle(img,(x1,y1),(x1+w1,y1+h1),(0,255,0), 1)
-x2,y2,w2,h2 = cv2.boundingRect(cnt2)
-cv2.rectangle(img,(x2,y2),(x2+w2,y2+h2),(0,255,0), 1)
+    resizeds = []
+    for cnt in contours:
+        x,y,w,h = cv2.boundingRect(cnt)     #元素左下角坐标（x,y）以及宽(w)高(h)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0), 1)     #在原图上给元素画矩形框
 
-cropped = image[y:y+h, x:x+w]
-resized = cv2.resize(cropped, (20, 20))
-letter = resized.reshape(-1,400).astype(np.float32)
-pred = predict(letter)
-# main_predict(letter)
+        kernel=np.ones((3,3),np.uint8)
+        image = cv2.dilate(image,kernel,iterations=1)   #膨胀
 
-cropped1 = image[y1:y1+h1, x1:x1+w1]
-resized1 = cv2.resize(cropped1, (20, 20))
-letter1 = resized1.reshape(-1,400).astype(np.float32)
-pred1 = predict(letter1)
+        #resize图片
+        if y-h*scale>0 and x-w*scale>0:
+            cropped = image[y-h*scale:y+h*(1+scale), x-w*scale:x+w*(1+scale)]
+        elif y-h*scale>0:
+            cropped = image[y-h*scale:y+h*(1+scale), 0:x+w*(1+scale)]
+        elif x-w*scale>0:
+            cropped = image[0:y+h*(1+scale), x-w*scale:x+w*(1+scale)]
+        else:
+            cropped = image[0:y+h*(1+scale), 0:x+w*(1+scale)]
+        resized = cv2.resize(cropped, (20, 20))
+        letter = resized.reshape(-1,400).astype(np.float32)
 
-cropped2 = image[y2:y2+h2, x2:x2+w2]
-resized2 = cv2.resize(cropped2, (20, 20))
-letter2 = resized2.reshape(-1,400).astype(np.float32)
-pred2 = predict(letter2)
+        #识别图像
+        pred = predict(letter)
+        cv2.putText(img, str(int(pred[0][0])), (x,y), font, 0.5, (255,0,0),2)
 
-font = cv2.FONT_HERSHEY_SIMPLEX
-cv2.putText(img, str(pred[0][0]), (x,y), font, 0.5, (0,0,255),1)
-cv2.putText(img, str(pred1[0][0]), (x1,y1), font, 0.5, (0,0,255),1)
-cv2.putText(img, str(pred2[0][0]), (x2,y2), font, 0.5, (0,0,255),1)
+        resizeds.append(resized)
 
-cv2.imshow('ori', img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    return resizeds
+
+if __name__=='__main__':
+    for i in range(10):
+        img_path = str(i)+'.jpg'
+        detect_numbers(img_path)
