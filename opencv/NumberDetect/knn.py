@@ -7,7 +7,7 @@ import cv2
 
 knn = cv2.KNearest()    # 如果是opencv3则在此处不同
 
-def predict_old():
+def predict_old(test):
     img = cv2.imread('digits.png')
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -41,7 +41,6 @@ def predict_old():
 
     np.savez('knn_data.npz',train=train,train_labels=train_labels)
 
-
 def train():
     img = cv2.imread('digits.png')
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -70,5 +69,8 @@ def main_predict(test):
     print '2-----:',result
 
 if __name__=='__main__':
-    # main_predict(None)
+    # img = cv2.imread('1_.jpg')
+    # gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    # test = gray.reshape(-1,400).astype(np.float32)
+    # main_predict(test)
     train()

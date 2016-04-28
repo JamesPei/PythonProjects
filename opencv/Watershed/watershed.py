@@ -39,7 +39,7 @@ def watershed_demo():
     markers = cv2.watershed(img,markers)
     img[markers == -1] = [255,0,0]
 
-    cv2.imshow('watershed', unknown)
+    cv2.imshow('watershed', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
