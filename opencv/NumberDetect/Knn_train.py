@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 
-knn = cv2.KNearest()    # 如果是opencv3则在此处不同
+knn = cv2.ml.KNearest_create()    # 如果是opencv3则在此处不同
 
 def train(path):
     img = cv2.imread('digits.png')

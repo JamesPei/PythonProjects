@@ -15,7 +15,8 @@ def Hough_line_transform():
     #rho – Distance resolution of the accumulator in pixels.
     #theta – Angle resolution of the accumulator in radians
     #Accumulator threshold parameter. Only those lines are returned that get enough votes (>threshold)
-    lines = cv2.HoughLines(edges,1,np.pi/180,150)
+    lines = cv2.HoughLines(edges,1,np.pi/180,100)
+
     for rho,theta in lines[0]:
         a = np.cos(theta)
         b = np.sin(theta)
@@ -43,8 +44,11 @@ def probabilistic_hough_transform():
     lines = cv2.HoughLinesP(edges,1,np.pi/180,50,minLineLength,maxLineGap)
     for x1,y1,x2,y2 in lines[0]:
         cv2.line(img,(x1,y1),(x2,y2),(0,255,0),2)
-    cv2.imwrite('houghlines5.jpg',img)
+    # cv2.imwrite('houghlines5.jpg',img)
+    return img
 
-# img = Hough_line_transform()
-# cv2.imwrite('houghlines_test.jpg',img)
-probabilistic_hough_transform()
+img = Hough_line_transform()
+# img = probabilistic_hough_transform()
+cv2.imshow('image',img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

@@ -36,18 +36,18 @@ def predict(letter):
     train = trainingData['train']
     trainLabels = trainingData['train_labels']
 
-    knn = cv2.KNearest()
-    knn.train(train, trainLabels)
+    knn = cv2.ml.KNearest_create()
+    knn.train(train, cv2.ml.ROW_SAMPLE, trainLabels)
 
     letter = np.float32(letter)
 
-    ret, result, neighbors, dist = knn.find_nearest(letter, k=5)
+    ret, result, neighbors, dist = knn.findNearest(letter, k=5)
     print '预测结果:',result
     return result
 
 # 轮廓检测
 def detect_contours(img, image, scale):
-    contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    img_contours, contours, heirs = cv2.findContours(image.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     # cv2.drawContours(img, contours, 2, (0,255,0), 1)
 
     resizeds = []
