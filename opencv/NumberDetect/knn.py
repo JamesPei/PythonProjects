@@ -5,7 +5,7 @@ import numpy as np
 # from detect_numbers import predict
 import cv2
 
-knn = cv2.KNearest()    # 如果是opencv3则在此处不同
+knn = cv2.ml.KNearest_create()    # 如果是opencv3则在此处不同
 
 def predict_old(test):
     img = cv2.imread('digits.png')
@@ -27,7 +27,7 @@ def predict_old(test):
     test_labels = train_labels.copy()
 
     #cv2.KNearest.find_nearest(samples, k[, results[, neighborResponses[, dists]]]) → retval, results, neighborResponses, dists
-    ret,result,neighbours,dist = knn.find_nearest(test.reshape(-1,400).astype(np.float32),k=5)
+    ret,result,neighbours,dist = knn.findNearest(test.reshape(-1,400).astype(np.float32),k=5)
     print '2-----:',result
 
 
@@ -58,14 +58,14 @@ def train():
     train_labels = np.repeat(k,500)[:, np.newaxis]  # Repeat elements of an array.
 
     #initiate kNN, train the data, then test it with test data for k=1
-    knn.train(train,train_labels)
+    knn.train(train, cv2.ml.ROW_SAMPLE, train_labels)
 
     np.savez('knn_data.npz',train=train,train_labels=train_labels)
 
 def main_predict(test):
     #cv2.KNearest.find_nearest(samples, k[, results[, neighborResponses[, dists]]]) → retval, results, neighborResponses, dists
     train()
-    ret,result,neighbours,dist = knn.find_nearest(test.reshape(-1,400).astype(np.float32),k=5)
+    ret,result,neighbours,dist = knn.findNearest(test.reshape(-1,400).astype(np.float32),k=5)
     print '2-----:',result
 
 if __name__=='__main__':
