@@ -3,6 +3,7 @@
 
 from functools import wraps
 from TopologyAlgorithms import topsort
+from bisect import bisect
 
 #记忆体化的装饰器函数
 def memo(func):
@@ -36,7 +37,56 @@ def dag_sp(W, s, t):
             d[v] = min(d[v], d[u]+W[u][v])  # relax the edge
     return d[t]                          # distance to t (from s)
 
-# print fib(100)  #指数级耗时过长或无法计算
-fib = memo(fib)
-print fib(100)
+# 用记忆体，递归方式解决最长递增子序列问题
+def rec_list(seq):
+    @memo
+    def L(cur):                                     #　Longest ending at seq[cur]
+        res = 1                                     # Length is at least 1
+        for pre in range(cur):                      # potential predecessors
+            if seq[pre] <= seq[cur]:                # A valid (smaller) predec
+                res = max(res, 1+L(pre))            # can we improve the solution?
+        return res
+    return max(L(i) for i in range(len(seq)))       # the longest of them all
 
+# 用基本迭代方法解决最长递归子序列问题
+def basic_lis(seq):
+    L=[1]*len(seq)
+    for cur, val in enumerate(seq):
+        for pre in range(cur):
+            if seq[pre] <= val:
+                L[cur] = max(L[cur], 1+L[pre])
+    return max(L)
+
+# 最长递增子序列问题
+def lis(seq):                       # longest increasing subseq
+    end=[]                          # End-values for all lengths
+    for val in seq:                 # try every value, in order
+        idx = bisect(end, val)      # bisect(end, val)查找该数值(val)将会插入的位置并返回，而不会插入。
+        if idx==len(end): end.append(val)   # longest seq.extended
+        else: end[idx] = val        # Prev. endpoint reduced
+    return len(end)                 # the longest we found
+
+# 用递归，记忆体化方式解决LCS问题
+def rec_lcs(a,b):
+    @memo
+    def L(i,j):
+        if min(i,j)<0: return 0
+        if a[i]==b[j]: return 1+L(i-1, j-1)
+        return max(L(i-1,j),L(i,j-1))
+    return L(len(a)-1, len(b)-1)
+
+
+
+if __name__=='__main__':
+    # print fib(100)  #指数级耗时过长或无法计算
+
+    # 利用记忆体化求斐波那契数列
+    # fib = memo(fib)
+    # print fib(100)
+
+    dag={'a':{'b':2, 'f':9}, 'b':{'c':1, 'd':2, 'f':6}, 'c':{'d':7}, 'd':{'e':2, 'f':3}, 'e':{'f':4}, 'f':{}}
+    # print rec_dag_sp(dag, 'a', 'f')
+    # print dag_sp(dag, 'a', 'f')
+
+    seq=[1,2,3,6,8,0,4,5,11,32,12]
+    print lis(seq)

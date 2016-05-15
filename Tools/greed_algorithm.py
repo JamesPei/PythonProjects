@@ -25,7 +25,7 @@ def codes(tree, prefix=""):
         for pair in codes(child, prefix + bit): #get codes recursively
             yield pair
 
-#kruskal算法
+#kruskal算法,时间复杂度(mlgn)
 def find(C, u):
     if C[u] != u :
         C[u] = find(C, C[u])       # path compression
@@ -36,7 +36,7 @@ def union(C, R, u, v):
     if R[u] > R[v]:
         C[v] = u
     else:
-        C[u] = u
+        C[u] = v
     if R[u] == R[v]:        # A tie: Move v up a level
         R[v] += 1
 
@@ -54,15 +54,26 @@ def kruskal(G):
 def prim(G, s):
     P, Q = {}, [(0, None, s)]
     while Q:
+        # print 'Q:',Q
         _, m, u = heappop(Q)
         if u in P: continue
         P[u] = m
+        # print 'P:',P
         for v,w in G[u].items():
             heappush(Q, (w, u, v))
+    P = [(k,v) for k,v in P.items() if v!=None]
     return P
 
 if __name__ == '__main__':
-    seq = "abcdefghi"
-    frq = [4,5,6,9,11,12,15,16,20]
-    print huffman(seq, frq)
+    # seq = "abcdefghi"
+    # frq = [4,5,6,9,11,12,15,16,20]
+    # print huffman(seq, frq)
+    G={'A':{'D':5,'B':7}, 'B':{'A':7,'C':8,'E':7,'D':9},'C':{'B':8,'E':5},'D':{'A':5,'B':9,'E':15,'F':6},'E':{'B':7,'C':5,'D':15,'F':8, 'G':9},
+       'F':{'D':6, 'E':8, 'G':11}, 'G':{'E':9, 'F':11}}
+    # G={'A':{'D':5,'B':7}, 'B':{'A':7,'C':8,'E':7,'D':9},'C':{'B':8,'E':5},'D':{'A':5,'B':9,'E':15},'E':{'B':7,'C':5,'D':15}}
+    # print prim(G,'B')
+    G1={'A':{'D':5,'B':7}, 'B':{'A':7,'C':8,'E':7,'D':9},'C':{'B':8,'E':5},'D':{'A':5,'B':9,'E':15,'F':6},'E':{'B':7,'C':5,'D':15,'F':8, 'G':9},
+       'F':{'D':6, 'E':8, 'G':11}, 'G':{'E':9, 'F':11}}
+    print kruskal(G1)
+
 

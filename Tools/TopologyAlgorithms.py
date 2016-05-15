@@ -2,11 +2,11 @@
 #-*-coding:utf-8-*-
 
     #朴素拓扑排序法，时间复杂度O(n**2)
-def naive_topsort(self, G, S=None):
+def naive_topsort(G, S=None):
     if S is None: S = set(G)
     if len(S) == 1: return list(S)
     v = S.pop()
-    seq = self.naive_topsort(G, S)
+    seq = naive_topsort(G, S)
     min_i = 0
     for i, u in enumerate(seq):
         if v in G[u]: min_i = i+1
@@ -14,7 +14,7 @@ def naive_topsort(self, G, S=None):
     return seq
 
 #有向无环图的拓扑排序,时间复杂度O(n)
-def topsort(self, G):
+def topsort(G):
     count = dict((u, 0) for u in G)
     for u in G:
         for v in G[u]:
@@ -33,7 +33,7 @@ def topsort(self, G):
 #indegree0函数返回入度为0的顶点，并在v和e中删除它和它相邻的边，如果v列表中没有顶点了，就返回None，
 #如果v列表中还有顶点但是找不到入度为0的顶点，说明有向图中有环，返回-1。topoSort函数不断取出有向图中
 #入度为0的顶点，最后就是拓扑排序序列
-def indegree0(self,v,e):
+def indegree0(v,e):
     if v==[]:
         return None
     tmp=v[:]
@@ -56,10 +56,10 @@ def indegree0(self,v,e):
             v.remove(t)
     return tmp
 
-def topoSort(self,v,e):
+def topoSort(v,e):
     result=[]
     while True:
-        nodes=self.indegree0(v,e)
+        nodes=indegree0(v,e)
         if nodes==None:
             break
         if nodes==-1:
@@ -68,14 +68,15 @@ def topoSort(self,v,e):
         result.extend(nodes)
     return result
 
-# v=['a','b','c','d','e','f']
-# e=[('a','b'),('b','c'),('c','d'),('d','e'),('e','f'),('a','f'),('b','f'),('b','d'),('d','f')]
-v=['a','b','c','d','e']
-e=[('a','b'),('a','d'),('b','c'),('d','c'),('d','e'),('e','c')]
-res=topoSort(v,e)
-print(res)
+if __name__=='__main__':
+    # v=['a','b','c','d','e','f']
+    # e=[('a','b'),('b','c'),('c','d'),('d','e'),('e','f'),('a','f'),('b','f'),('b','d'),('d','f')]
+    v=['a','b','c','d','e']
+    e=[('a','b'),('a','d'),('b','c'),('d','c'),('d','e'),('e','c')]
+    res=topoSort(v,e)
+    print(res)
 
-# G={'a':('b','f'),'b':('c','d','f'),'c':('d'),'d':('e','f'),'e':('f'),'f':()}
-G={'a':('b','d'),'b':('c'),'c':(),'d':('c','e'),'e':('c')}
-res=topsort(G)
-print res
+    # G={'a':('b','f'),'b':('c','d','f'),'c':('d'),'d':('e','f'),'e':('f'),'f':()}
+    G={'a':('b','d'),'b':('c'),'c':(),'d':('c','e'),'e':('c')}
+    res=topsort(G)
+    print res
