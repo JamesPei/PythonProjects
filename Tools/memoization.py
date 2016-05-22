@@ -74,7 +74,7 @@ def rec_lcs(a,b):
         if a[i]==b[j]: return 1+L(i-1, j-1)
         return max(L(i-1,j),L(i,j-1))
     return L(len(a)-1, len(b)-1)
-
+# 迭代版LCS
 def lcs(a,b):
     n,m = len(a),len(b)
     pre,cur=[0]*(n+1),[0]*(n+1)
@@ -86,6 +86,56 @@ def lcs(a,b):
             else:
                 cur[i]=max(pre[i], cur[i-1])
     return cur[n]
+
+# 用递归，记忆体化方式解决无限制的整数背包问题，时间复杂度Θ（cn）伪多项式级
+def rec_unbounded_knapsack(w,v,c):      #weights, values and capacity
+    @memo
+    def m(r):
+        if r==0: return 0
+        val = m(r-1)
+        for i,wi in enumerate(w):
+            if wi > r: continue
+            val = max(val, v[i] + m(r-wi))
+        return val
+    return m(c)
+
+# 迭代版无限制的整数背包问题，时间复杂度Θ（cn）伪多项式级
+def unbounded_knapsack(w, v, c):
+    m=[0]
+    for r in range(1, c+1):
+        val=m[r-1]
+        for i,wi in enumerate(w):
+            if wi>r: continue
+            val = max(val, v[i]+m[r-wi])
+        m.append(val)
+    return m[c]
+
+# 用递归，记忆体化方式解决0-1背包问题，时间复杂度Θ（cn）伪多项式级
+def rec_knapsack(w, v, c):
+    @memo
+    def m(k, r):
+        if k==0 or r==0 :return 0
+        i = k-1
+        drop = m(k-1, r)
+        if w[i] > r: return drop
+        return max(drop, v[i]+m(k-1, r-w[i]))
+    return m(len(w), c)
+
+# 迭代方式解决0-1背包问题，时间复杂度Θ（cn）伪多项式级
+def knapsack(w, v, c):              # returns solution matrices
+    n = len(w)                        # number of available items
+    m = [[0]*(c+1) for i in range(n+1)]     # empty max-value matrix
+    P = [[False]*(c+1) for i in range(n+1)] # empty keep/drop matrix
+    for k in range(1, n+1):                 # we can use k first objects
+        i = k-1                             # object under consideration
+        for r in range(1, c+1):             # Every positive capacity
+            m[k][r] = drop = m[k-1][r]      # by default: drop the  object
+            if w[i] > r: continue          # too heavy? Ignore it
+            keep = v[i] + m[k-1][r-w[i]]    # value  of keeping it
+            m[k][r] = max(drop, keep)       # best of dropping and keeping
+            P[k][r] = keep > drop           # did we keep it?
+    return m, P                            # retrun full results
+
 
 if __name__=='__main__':
     # print fib(100)  #指数级耗时过长或无法计算
