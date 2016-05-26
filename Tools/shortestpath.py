@@ -2,6 +2,7 @@
 #-*-coding:utf-8-*-
 
 from functools import wraps
+from heapq import heappush,heappop
 
 #记忆体化的装饰器函数
 def memo(func):
@@ -35,7 +36,6 @@ def bellman_ford(G,s):
     return D,P
 
 # Dijkstra算法,运行时间Q((m+n)lgn):m边数，n:节点数
-from heapq import heappush,heappop
 def dijkstra(G, s):
     D,P,Q,S = {s:0},{},[(0,s)],set()                                # Est., tree, queue, visited
     while Q:                                                       # Still unprocessed nodes?
@@ -99,6 +99,37 @@ def floyd_warshall(G):
                     D[u][v] = shortcut
                     P[u,v] = P[k,v]
     return D,P
+
+# Dijkstra算法作为解决方案生成器的实现
+def idijkstra(G,s):
+    Q,S = [(0,s)],set()
+    while Q:
+        d,u = heappop(Q)
+        if u in S: continue
+        S.add(u)
+        yield u,d
+        for v in G[u]:
+            heappush(Q, (d+G[u][v], v))
+
+# Dijkstra双向图版本
+from itertools import cycle
+def bidir_dijkstra(G, s, t):
+    Ds, Dt = {},{}                 # D from s and t, respectively
+    forw, back = idijkstra(G, s), idijkstra(G,t)
+    dirs = (Ds, Dt, forw), (Dt, Ds, back)       # alternating situations
+    try:                                        # until one of forw/back ends
+        for D, other, step in cycle(dirs):      # switch between the two
+            v,d = next(step)                    # next node/distance for one
+            D[v] = d                            # remember the distance
+            if v in other: break               # also visited by the other
+    except StopIteration: return inf           # one ran out before they met
+    m = inf                                     # they met, now find the  path
+    for u in Ds:                                # for every visited forw-node
+        for v in G[u]:                          # ...go through its neighbors
+            if not v in Dt: continue           # is it also back-visited?
+            m = min(m, Ds[u]+G[u][v]+Dt[v])     # is this path better
+    return m                                    # return the best path
+
 
 if __name__=='__main__':
     a,b,c,d,e,f,g,h = range(8)
