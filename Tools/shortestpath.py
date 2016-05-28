@@ -1,6 +1,7 @@
 #__author__ = 'James'
 #-*-coding:utf-8-*-
 
+from string import ascii_lowercase as chars
 from functools import wraps
 from heapq import heappush,heappop
 
@@ -130,19 +131,70 @@ def bidir_dijkstra(G, s, t):
             m = min(m, Ds[u]+G[u][v]+Dt[v])     # is this path better
     return m                                    # return the best path
 
+# A*算法
+def a_star(G, s, t, h):
+    P,Q = {}, [(h(s), None, s)]
+    while Q:
+        d, p, u  = heappop(Q)                   # Node with lowest heuristic
+        if u in P: continue                     # already visited? skip it
+        P[u] = p                                # set path predecessor
+        if u==t: return d-h(t),P
+        for v in G[u]:
+            w = G[u][v] - h(u) + h(v)           # modify weight wrt heuristic
+            heappush(Q, (d+w, u, v))            # add to queue
+    return inf, None
+
+# 单词梯路径的隐式图
+def variants(wd, words):                        # yield all word variants
+    wasl = list(wd)
+    for i,c in enumerate(wasl):
+        for oc in chars:
+            if c==oc: continue                  # dont replace with the same
+            wasl[i]=oc                          # replace the character
+            ow = ''.join(wasl)                  # make a string of the word
+            if ow in words:                     # is it a valid word
+                yield ow                        # then we yield it
+        wasl[i] = c                             # reset teh character
+
+class WordSpace:
+    def __init__(self, words):
+        self.words = words
+        self.M = dict()
+
+    def __getitem__(self, wd):
+        if wd not in self.M:
+            self.M[wd] = dict.fromkeys(variants(wd, self.words), 1)
+        return self.M[wd]
+
+    def heuristic(self, u, v):                  # the default heuristic
+        return sum(a!=b for a,b in zip(u,v))    # how many characters differ?
+
+    def ladder(self, s, t, h=None):             # utility wrapper for a_star
+        if h is None:                           # allows other heuristics
+            def h(v):
+                return self.heuristic(v,t)
+        _,P = a_star(self, s, t, h)             # get the predecessor map
+        if P is None:
+            return [s, None, t]                 # when no path exists
+        u, p = t, []
+        while u is not None:                    # walk backward from t
+            p.append(u)                         # append every predecessor
+            u = P[u]                            # take another step
+        p.reverse()                             # the path is backward
+        return p
 
 if __name__=='__main__':
-    a,b,c,d,e,f,g,h = range(8)
-    G={
-        a:{b:2, c:1, d:3, e:9, f:4},
-        b:{c:4, e:3},
-        c:{d:8},
-        d:{e:7},
-        e:{f:5},
-        f:{c:2, g:2, h:2},
-        g:{f:1, h:6},
-        h:{f:9, g:8}
-    }
+    # a,b,c,d,e,f,g,h = range(8)
+    # G={
+    #     a:{b:2, c:1, d:3, e:9, f:4},
+    #     b:{c:4, e:3},
+    #     c:{d:8},
+    #     d:{e:7},
+    #     e:{f:5},
+    #     f:{c:2, g:2, h:2},
+    #     g:{f:1, h:6},
+    #     h:{f:9, g:8}
+    # }
     # G = {
     #     a: {b: 3, c: 7, d: 3, e: 9, f: 4},
     #     b: {c: 4, e: 3},
@@ -165,3 +217,17 @@ if __name__=='__main__':
     # }
     # print bellman_ford(G, a)
     # print dijkstra(G,a)
+    # for i in idijkstra(G,a):
+    #     print i
+    # G={
+    #     a:{b:2, c:1, d:3, e:9, f:4},
+    #     b:{a:2, c:4, e:3},
+    #     c:{a:1, b:4, d:8, f:2},
+    #     d:{a:3, c:8, e:7},
+    #     e:{a:9, b:3, d:7, f:5},
+    #     f:{a:4, c:2, e:5, g:2, h:2},
+    #     g:{f:2, h:6},
+    #     h:{f:2, g:6}
+    # }
+    # print bidir_dijkstra(G,a,h)
+    a = variants('lead','gold')
