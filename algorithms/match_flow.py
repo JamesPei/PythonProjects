@@ -3,6 +3,14 @@
 
 from itertools import chain
 
+def tr(G):
+    GT = {}
+    for u in G: GT[u] = set()
+    for u in G:
+        for v in G[u]:
+            GT[v].add(u)
+    return GT
+
 # 通过增广路径算法来寻找双边最大匹配
 def match(G,X,Y):           # maximum bipartite matching
     H = tr(G)                # the transposed graph
