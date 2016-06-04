@@ -32,9 +32,13 @@ def match(G,X,Y):                                           # maximum bipartite 
             while u != s:                                   # augment: backtrack to s
                 u, v = P[u], u                              # shift one step
                 if v in G[u]:                               # forward edges?
+                    print 'M add :',(u,v)
                     M.add((u,v))                            # new edge
+                    print 'M after add:',M
                 else:                                       # backward edge?
+                    print 'M remove:',(v,u)
                     M.remove((v,u))                         # cancellation
+                    print 'M after remove:', M
     return M                                                # matching--a set of edges
 
 # 使用带标记的遍历来寻找增广路径，并对边不想交的路径进行计数
@@ -63,9 +67,12 @@ def paths(G, s, t):                                         # edge-disjoint path
                 M.remove((v, u))                            # cancellation
 
 if __name__=='__main__':
-    G={'A':('1','3'), 'B':('2','4'), 'C':('1','4'), 'D':'3', '1':('A','C'), '2':'B', '3':('A','D'), '4':('B','C')}
-    X=['A','B','C','D']
-    Y=['1','2','3','4']
+    # G={'A':('1','3'), 'B':('2','4'), 'C':('1','4'), 'D':'3', '1':('A','C'), '2':'B', '3':('A','D'), '4':('B','C')}
+    # X=['A','B','C','D']
+    # Y=['1','2','3','4']
+    G={'A':('E','F'),'B':'G','C':('E','G'), 'E':('A','C'), 'F':'A', 'G':('B', 'C')}
+    X=['A', 'B', 'C']
+    Y=['E', 'F', 'G']
     M=match(G,X,Y)
     print M
     
