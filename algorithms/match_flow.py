@@ -2,6 +2,10 @@
 #-*-coding:utf-8-*-
 
 from itertools import chain
+from collections import deque
+from collections import defaultdict
+
+inf = float('inf')
 
 def tr(G):
     GT = {}
@@ -29,16 +33,12 @@ def match(G,X,Y):                                           # maximum bipartite 
                 if v in P: continue                         # already visited? Ignore
                 P[v] = u                                    # traversal predecessor
                 Q.add(v)                                    # new nodel discovered
-            while u != s:                                   # augment: backtrack to s
-                u, v = P[u], u                              # shift one step
-                if v in G[u]:                               # forward edges?
-                    print 'M add :',(u,v)
-                    M.add((u,v))                            # new edge
-                    print 'M after add:',M
-                else:                                       # backward edge?
-                    print 'M remove:',(v,u)
-                    M.remove((v,u))                         # cancellation
-                    print 'M after remove:', M
+        while u != s:                                       # augment: backtrack to s
+            u, v = P[u], u                                   # shift one step
+            if v in G[u]:                                   # forward edge?
+                M.add((u, v))                               # new edge
+            else:                                           # backward edge?
+                M.remove((v, u))                             # cancellation
     return M                                                # matching--a set of edges
 
 # 使用带标记的遍历来寻找增广路径，并对边不想交的路径进行计数
@@ -65,6 +65,24 @@ def paths(G, s, t):                                         # edge-disjoint path
                 M.add((u,v))                                # new edge
             else:                                           # backward edge?
                 M.remove((v, u))                            # cancellation
+
+# 通过BFS与标记法来寻找增广路径
+def bfs_aug(G, H, s, t, f):
+    P, Q, F = {s:None}, deque([s]),{s:inf}      # tree, queue, flow label
+    def label(inc):                             # flow increase at v from u?
+        if v in P or inc <= 0: return          # seen? unreachable? Ignore
+        F[v], P[v] = min(F[u], inc), u           # max flow here ? from where
+        Q.append(v)
+    while Q:
+        u = Q.popleft()
+        if  u==t: return P, F[t]
+        for v in G[u]: label(G[u][v]-f[u,v])
+        for v in H[u]: label(f[v,u])
+    return None, 0
+
+# Ford-Fulkerson算法（默认使用Edmonds-Karp算法)
+def ford_fulkerson(G, s, t, aug=bfs_aug):
+    H, f = tr(G), defaultdict(int)
 
 if __name__=='__main__':
     # G={'A':('1','3'), 'B':('2','4'), 'C':('1','4'), 'D':'3', '1':('A','C'), '2':'B', '3':('A','D'), '4':('B','C')}
