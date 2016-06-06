@@ -15,6 +15,7 @@ def tr(G):
             GT[v].add(u)
     return GT
 
+<<<<<<< HEAD
 # 通过增广路径算法来寻找双边最大匹配
 def match(G,X,Y):                                           # maximum bipartite matching
     H = tr(G)                                               # the transposed graph
@@ -42,6 +43,9 @@ def match(G,X,Y):                                           # maximum bipartite 
     return M                                                # matching--a set of edges
 
 # 使用带标记的遍历来寻找增广路径，并对边不想交的路径进行计数
+=======
+# 使用带标记的遍历来寻找增广路径，并对边不相交的路径进行计数
+>>>>>>> 49d15136a1a964c5576a7e79a3604eb34916089d
 def paths(G, s, t):                                         # edge-disjoint path count
     H, M, count = tr(G), set(), 0                           # transpose, matching, result
     while True:                                             # until the function returns
@@ -85,12 +89,9 @@ def ford_fulkerson(G, s, t, aug=bfs_aug):
     H, f = tr(G), defaultdict(int)
 
 if __name__=='__main__':
-    # G={'A':('1','3'), 'B':('2','4'), 'C':('1','4'), 'D':'3', '1':('A','C'), '2':'B', '3':('A','D'), '4':('B','C')}
-    # X=['A','B','C','D']
-    # Y=['1','2','3','4']
-    G={'A':('E','F'),'B':'G','C':('E','G'), 'E':('A','C'), 'F':'A', 'G':('B', 'C')}
-    X=['A', 'B', 'C']
-    Y=['E', 'F', 'G']
-    M=match(G,X,Y)
-    print M
+    G={'s':('a','c','e'),'a':'b','c':('b','d','f'), 'e':'f', 'b':'t', 'd':'t', 'f':'t', 't':''}
+    G={'s':('a','c'),'a':'b','c':('b','d'), 'b':'t', 'd':'t', 't':''}
+    s='s'
+    t='t'
+    print paths(G,s,t)
     

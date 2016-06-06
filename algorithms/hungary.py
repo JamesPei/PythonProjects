@@ -1,32 +1,43 @@
 #__author__ = 'James'
 #-*-coding:utf-8-*-
 
-visited={}
-def maxmatch(G, X, Y):
-    match=0
-    for i in X:
-        for v in Y:
-            if v in G[i] and v in visited.keys() and not visited[v]:
-                visited[v]=1
-                match+=1
-                break
-            elif v not in G[i] or v in visited.keys() and visited[v]:
-                continue
-            elif v not in visited.keys():
-                visited[v]=1
-                match+=1
-                break
-    return match
+M=[]
+class hungary():
 
-if __name__=='__main__':
-    # G={'A':('1','3'), 'B':('2','4'), 'C':('1','4'), 'D':'3', '1':('A','C'), '2':'B', '3':('A','D'), '4':('B','C')}
-    # G={'A':'1', 'B':'4', 'C':'4', 'D':'2', '1':'A', '2':'D', '4':('B','C')}
-    # X=['A','B','C','D']
-    # Y=['1','2','3','4']
-    # G={'A':('1','3','6'), 'B':('2','3','4'), 'C':('7','4'), 'D':'7', 'E':('3','7'), 'F':('5','6'),'G':('4','6'),
-    #    '1':'A', '2':'B', '3':('A','B', 'E'), '4':('B','C','G'), '5':'F', '6':('A','F','G'), '7':('C','D','E')}
-    G={'A':'2', 'B':'2', 'C':'2', 'D':('3','4'), 'E':'3', 'F':'4','G':('5','7'),
-       '1':'', '2':('A','B','C'), '3':('D', 'E'), '4':('D','F'), '5':'G', '6':'', '7':'G'}
-    X=['A','B','C','D','E','F','G']
-    Y=['1','2','3','4','5','6','7']
-    print maxmatch(G,X,Y)
+    def __init__(self, nx, ny, edge, cx, cy, visited):
+        self.nx, self.ny=nx, ny
+        self.edge = edge
+        self.cx, self.cy=cx,cy
+        self.visited=visited
+
+    def max_match(self):
+        res=0
+        self.cx={'A':-1,'B':-1,'C':-1}
+        self.cy={'E':-1,'F':-1,'G':-1}
+
+        for i in self.nx:
+            if self.cx[i]==-1:
+                self.visited={'E':0,'F':0,'G':0}
+                res+=self.path(i)
+        return res
+
+    def path(self, u):
+        for v in self.ny:
+            if self.edge[u][v] and (not self.visited[v]):
+                self.visited[v]=1
+                print self.cy[v]
+                if self.cy[v]==-1 or self.path(v):
+                    self.cx[u] = v
+                    self.cy[v] = u
+                    M.append((u,v))
+                    print M
+                    return 1
+        return 0
+
+if __name__ == '__main__':
+    nx, ny=['A','B','C'] ,['E','F','G']
+    edge={'A':{'E':1,'F':1}, 'B':{'G':1}, 'C':{'E':1, 'G':1}}
+    cx, cy={},{}
+    visited={'E':0,'F':0,'G':0}
+    print hungary(nx, ny, edge, cx, cy, visited).max_match()
+
