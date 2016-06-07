@@ -15,7 +15,6 @@ def tr(G):
             GT[v].add(u)
     return GT
 
-<<<<<<< HEAD
 # 通过增广路径算法来寻找双边最大匹配
 def match(G,X,Y):                                           # maximum bipartite matching
     H = tr(G)                                               # the transposed graph
@@ -42,10 +41,7 @@ def match(G,X,Y):                                           # maximum bipartite 
                 M.remove((v, u))                             # cancellation
     return M                                                # matching--a set of edges
 
-# 使用带标记的遍历来寻找增广路径，并对边不想交的路径进行计数
-=======
 # 使用带标记的遍历来寻找增广路径，并对边不相交的路径进行计数
->>>>>>> 49d15136a1a964c5576a7e79a3604eb34916089d
 def paths(G, s, t):                                         # edge-disjoint path count
     H, M, count = tr(G), set(), 0                           # transpose, matching, result
     while True:                                             # until the function returns
@@ -72,21 +68,29 @@ def paths(G, s, t):                                         # edge-disjoint path
 
 # 通过BFS与标记法来寻找增广路径
 def bfs_aug(G, H, s, t, f):
-    P, Q, F = {s:None}, deque([s]),{s:inf}      # tree, queue, flow label
-    def label(inc):                             # flow increase at v from u?
-        if v in P or inc <= 0: return          # seen? unreachable? Ignore
-        F[v], P[v] = min(F[u], inc), u           # max flow here ? from where
-        Q.append(v)
-    while Q:
-        u = Q.popleft()
-        if  u==t: return P, F[t]
-        for v in G[u]: label(G[u][v]-f[u,v])
-        for v in H[u]: label(f[v,u])
-    return None, 0
+    P, Q, F = {s:None}, deque([s]),{s:inf}                  # tree, queue, flow label
+    def label(inc):                                         # flow increase at v from u?
+        if v in P or inc <= 0: return                      # seen? unreachable? Ignore
+        F[v], P[v] = min(F[u], inc), u                      # max flow here ? from where?
+        Q.append(v)                                         # Discovered -- visit later
+    while Q:                                                # Discovered, unvisited
+        u = Q.popleft()                                     # get one(FIFO)
+        if  u==t: return P, F[t]                           # reached t? augmenting path
+        for v in G[u]: label(G[u][v]-f[u,v])                # label along out-edges
+        for v in H[u]: label(f[v,u])                        # label along in-edges
+    return None, 0                                          # no argmenting path found
 
 # Ford-Fulkerson算法（默认使用Edmonds-Karp算法)
-def ford_fulkerson(G, s, t, aug=bfs_aug):
-    H, f = tr(G), defaultdict(int)
+def ford_fulkerson(G, s, t, aug=bfs_aug):                   # max flow from s to t
+    H, f = tr(G), defaultdict(int)                          # transpose and flow
+    while True:                                             # while we can improve things
+        P,c = aug(G,H,s,t,f)                                # aug. path and capacity/slack
+        if c==0: return f                                  # no augm. path found? Done!
+        u = t                                               # start augmentation
+        while u != s:                                       # backtrack to s
+            u,v = P[u], u                                   # shift one step
+            if v in G[u]: f[u.v] += c                       # forward edge? add slack
+            else:   f[v,u] -= c                             # backward edge? cancel slack
 
 if __name__=='__main__':
     G={'s':('a','c','e'),'a':'b','c':('b','d','f'), 'e':'f', 'b':'t', 'd':'t', 'f':'t', 't':''}
