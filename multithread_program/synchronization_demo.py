@@ -88,7 +88,7 @@ def test_condition():
     # restore the recursion level when the lock is reacquired.
     cond.acquire()      # To lock the lock, a thread calls its acquire() method; this returns once the thread owns the lock
     print cond
-    cond.acquire()
+    cond.acquire()      # if this thread already owns the lock, increment the recursion level by one, and return immediately
     print cond
 
     p.start()
@@ -106,7 +106,6 @@ def test_condition():
     print cond
 
 #### TEST_SEMAPHORE
-
 def semaphore_func(sema, mutex, running):
     sema.acquire()
 
@@ -126,6 +125,8 @@ def semaphore_func(sema, mutex, running):
     sema.release()
 
 def test_semaphore():
+    # A semaphore manages an internal counter which is decremented by each acquire() call and incremented by each release() call.
+    # The counter can never go below zero; when acquire() finds that it is zero, it blocks, waiting until some other thread calls release().
     sema = multiprocessing.Semaphore(3)
     mutex = multiprocessing.RLock()
     running = multiprocessing.Value('i', 0)
@@ -172,7 +173,8 @@ def event_func(event):
     print '\t%r has woken up' % multiprocessing.current_process()
 
 def test_event():
-    event = multiprocessing.Event()
+    # An event object manages an internal flag that can be set to true with the set() method and reset to false with the clear() method. The wait() method blocks until the flag is true
+    event = multiprocessing.Event()  # This method returns the state of the internal semaphore on exit, so it will always return True except if a timeout is given and the operation times out
 
     processes = [multiprocessing.Process(target=event_func, args=(event,))
                  for i in range(5)]
