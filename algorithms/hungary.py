@@ -65,6 +65,7 @@ class BFS_hungary():
                             if g[u][v] and visited[v]!=i:
                                 visited[v]=i
                                 Q[qe]=My[v]
+                                qe += 1
                                 if My[v]>=0:
                                     prev[My[v]] = u
                                 else:
@@ -78,9 +79,9 @@ class BFS_hungary():
                                         d = prev[d]
                                         e = t
                             qs+=1
-            if(Mx[i]!=-1):
-                res += 1
-        return res
+                if(Mx[i]!=-1):
+                    res += 1
+            return res
 
 if __name__ == '__main__':
     # nx, ny=['A','B','C'] ,['E','F','G']
