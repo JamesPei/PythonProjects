@@ -82,7 +82,7 @@ def bfs_aug(G, H, s, t, f):
         for v in H[u]: label(f[v,u])                        # label along in-edges
     return None, 0                                          # no argmenting path found
 
-# Ford-Fulkerson算法（默认使用Edmonds-Karp算法)
+# Ford-Fulkerson算法（默认使用Edmonds-Karp算法)，对于n个节点，m条边，时间复杂度为O(nm**2)
 def ford_fulkerson(G, s, t, aug=bfs_aug):                   # max flow from s to t
     H, f = tr(G), defaultdict(int)                          # transpose and flow
     while True:                                             # while we can improve things
@@ -96,7 +96,7 @@ def ford_fulkerson(G, s, t, aug=bfs_aug):                   # max flow from s to
 
 #===========================最小成本流问题============================
 # Busacker-Gowen算法，使用Bellman-Ford算法作为增广算法
-def busacker_gowen(G,W,s,t):                                # Min-cost max-flow
+def busacker_gowen(G,W,s,t):                                # Min-cost max-flow. W[u,v]是从边u到v的权重，也称为成本
     def sp_aug(G,H,s,t,f):                                  # shortest path(Bellman-Ford)
         D,P,F = {s:0},{s:None},{s:inf, t:0}                 # Dist, preds and flow
         def label(inc, cst):                                # Label + relax, really
