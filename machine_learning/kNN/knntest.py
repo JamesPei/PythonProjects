@@ -4,7 +4,6 @@
 from math import sqrt
 from numpy import sum, array
 
-
 class KnnClassifier(object):
 
     def __init__(self, labels, samples):
