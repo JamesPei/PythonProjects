@@ -69,6 +69,7 @@ class SortingAlgorithms:
                 i-=1
                 n+=1
             current+=1
+        return oldlist
 
     # 区间[0,1)均匀分布的桶排序
     def sort(self,a):
@@ -82,8 +83,6 @@ class SortingAlgorithms:
 
     def insertSort(self,a):
         n=len(a)
-        if n<=1:
-            pass
         for i in range(1,n):    # O(n)级排序
             key=a[i]
             j=i-1
@@ -124,8 +123,10 @@ class SortingAlgorithms:
 
 # a = SortingAlgorithms().gnomesort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
 # b = SortingAlgorithms().mergesort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
+# c= SortingAlgorithms().bucketSort([1,8,5,7,3,2,0,9,4,6,34,12,55,29])
 # print  a
 # print  b
+# print c
 # print SortingAlgorithms().leavecircle(10,3)
 
 print SortingAlgorithms().countingSort([random.randint(0,100) for i in xrange(100)], 100)

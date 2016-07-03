@@ -25,7 +25,7 @@ def codes(tree, prefix=""):
         for pair in codes(child, prefix + bit): #get codes recursively
             yield pair
 
-#kruskal算法,时间复杂度(mlgn)
+#kruskal算法,时间复杂度Θ(mlgn)
 def find(C, u):
     if C[u] != u :
         C[u] = find(C, C[u])       # path compression

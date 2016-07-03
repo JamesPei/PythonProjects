@@ -184,17 +184,17 @@ class WordSpace:
         return p
 
 if __name__=='__main__':
-    # a,b,c,d,e,f,g,h = range(8)
-    # G={
-    #     a:{b:2, c:1, d:3, e:9, f:4},
-    #     b:{c:4, e:3},
-    #     c:{d:8},
-    #     d:{e:7},
-    #     e:{f:5},
-    #     f:{c:2, g:2, h:2},
-    #     g:{f:1, h:6},
-    #     h:{f:9, g:8}
-    # }
+    a,b,c,d,e,f,g,h = range(8)
+    G={
+        a:{b:2, c:1, d:3, e:9, f:4},
+        b:{c:4, e:3},
+        c:{d:8},
+        d:{e:7},
+        e:{f:5},
+        f:{c:2, g:2, h:2},
+        g:{f:1, h:6},
+        h:{f:9, g:8}
+    }
     # G = {
     #     a: {b: 3, c: 7, d: 3, e: 9, f: 4},
     #     b: {c: 4, e: 3},
@@ -215,7 +215,7 @@ if __name__=='__main__':
     #     g:{f:1, h:-9},
     #     h:{f:9, g:8}
     # }
-    # print bellman_ford(G, a)
+    print bellman_ford(G, a)
     # print dijkstra(G,a)
     # for i in idijkstra(G,a):
     #     print i
@@ -230,4 +230,4 @@ if __name__=='__main__':
     #     h:{f:2, g:6}
     # }
     # print bidir_dijkstra(G,a,h)
-    a = variants('lead','gold')
+    # a = variants('lead','gold')

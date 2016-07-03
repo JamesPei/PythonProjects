@@ -66,6 +66,7 @@ def dfs(G, s, d, f, S=None, t=0):
         if u in S: continue
         t = dfs(G, u, d, f, S, t)
     f[s] = t; t+=1
+    print 'f:',f
     return t
 
 #基于深度优先搜索的拓扑排序
@@ -133,11 +134,13 @@ def scc(G):
     return sccs
 
 # G={0:{1,2,3,4,5},1:{0,2,4},2:{0,1,3,5},3:{0,2,4},4:{0,1,3,5},5:{0,2,4,6,7},6:{5,7},7:{5,6},8:{9,10},9:{8,10},10:{8,9}}
-# G2 = {'a':('b','f'),'b':('c','d','f'),'c':('d'),'d':('e','f'),'e':('f'),'f':()}
+G2 = {'a':('b','f'),'b':('c','d','f'),'c':('d'),'d':('e','f'),'e':('f'),'f':()}
 # print components(G)
 # print walk(G, 1)
 # rec_dfs(G,2)
 # print list(iter_dfs(G,2))
+# print dfs(G,0,{},{})
 # print dfs_topsort(G2)
-G3={'a':('b','c'), 'b':('d','e','i'), 'c':'d', 'd':('a','h'), 'e':'f', 'f':'g', 'g':('e','h'),'h':'i','i':'h'}
-print scc(G3)
+# G3={'a':('b','c'), 'b':('d','e','i'), 'c':'d', 'd':('a','h'), 'e':'f', 'f':'g', 'g':('e','h'),'h':'i','i':'h'}
+# print scc(G3)
+print [i for i in iddfs(G2,'a')]
