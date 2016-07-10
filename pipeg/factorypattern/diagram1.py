@@ -1,26 +1,17 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import os
 import sys
-import tempfile
-
+import io
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == "-P": # For regression testing
         create_diagram(DiagramFactory()).save(sys.stdout)
         create_diagram(SvgDiagramFactory()).save(sys.stdout)
         return
-    textFilename = os.path.join(tempfile.gettempdir(), "diagram.txt")
-    svgFilename = os.path.join(tempfile.gettempdir(), "diagram.svg")
+    textFilename = os.path.join('./factorypattern/', "diagram.txt")   #gettempdir:Return the directory currently selected to create temporary files in
+    svgFilename = os.path.join('./factorypattern/', "diagram.svg")
 
     txtDiagram = create_diagram(DiagramFactory())
     txtDiagram.save(textFilename)
@@ -95,9 +86,9 @@ class Diagram:
         file = None if isinstance(filenameOrFile, str) else filenameOrFile
         try:
             if file is None:
-                file = open(filenameOrFile, "w", encoding="utf-8")
+                file = io.open(filenameOrFile, "w", encoding="utf-8")
             for row in self.diagram:
-                print("".join(row), file=file)
+                print "".join(row), file
         finally:
             if isinstance(filenameOrFile, str) and file is not None:
                 file.close()
@@ -171,9 +162,9 @@ class SvgDiagram:
         file = None if isinstance(filenameOrFile, str) else filenameOrFile
         try:
             if file is None:
-                file = open(filenameOrFile, "w", encoding="utf-8")
-            file.write("\n".join(self.diagram))
-            file.write("\n" + SVG_END)
+                file = io.open(filenameOrFile, "w", encoding="utf-8")
+            file.write("\n".join(unicode(self.diagram)))
+            file.write("\n" + unicode(SVG_END))
         finally:
             if isinstance(filenameOrFile, str) and file is not None:
                 file.close()

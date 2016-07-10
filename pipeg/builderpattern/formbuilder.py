@@ -1,19 +1,11 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import abc
 import os
 import re
 import sys
-import tempfile
+import io
 if sys.version_info[:2] < (3, 2):
     from xml.sax.saxutils import escape
 else:
@@ -26,16 +18,16 @@ def main():
         print(create_login_form(TkFormBuilder()))
         return
 
-    htmlFilename = os.path.join(tempfile.gettempdir(), "login.html")
+    htmlFilename = os.path.join('./builderpattern', "login.html")
     htmlForm = create_login_form(HtmlFormBuilder())
-    with open(htmlFilename, "w", encoding="utf-8") as file:
-        file.write(htmlForm)
+    with io.open(htmlFilename, "w", encoding="utf-8") as file:
+        file.write(unicode(htmlForm))
     print("wrote", htmlFilename)
 
-    tkFilename = os.path.join(tempfile.gettempdir(), "login.py")
+    tkFilename = os.path.join('./builderpattern', "login.py")
     tkForm = create_login_form(TkFormBuilder())
-    with open(tkFilename, "w", encoding="utf-8") as file:
-        file.write(tkForm)
+    with io.open(tkFilename, "w", encoding="utf-8") as file:
+        file.write(unicode(tkForm))
     print("wrote", tkFilename)
 
 
@@ -50,7 +42,8 @@ def create_login_form(builder):
     return builder.form()
 
 
-class AbstractFormBuilder(metaclass=abc.ABCMeta):
+class AbstractFormBuilder():
+    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def add_title(self, title):
@@ -85,7 +78,7 @@ class HtmlFormBuilder(AbstractFormBuilder):
 
 
     def add_title(self, title):
-        super().add_title(escape(title))
+        super(HtmlFormBuilder,self).add_title(escape(title))
 
 
     def add_label(self, text, row, column, **kwargs):
@@ -130,7 +123,7 @@ import tkinter.ttk as ttk
 class {name}Form(tk.Toplevel):
 
     def __init__(self, master):
-        super().__init__(master)
+        super({name}Form,self).__init__(master)
         self.withdraw()     # hide until ready to show
         self.title("{title}")
         {statements}
@@ -155,7 +148,7 @@ if __name__ == "__main__":
 
 
     def add_title(self, title):
-        super().add_title(title)
+        super(TkFormBuilder, self).add_title(title)
 
 
     def add_label(self, text, row, column, **kwargs):
