@@ -34,7 +34,7 @@ else:
                 43 if background == BLACK else 47, char or " ")
 
 
-class AbstractBoard:
+class AbstractBoard(object):
 
     def __init__(self, rows, columns):
         self.board = [[None for _ in range(columns)] for _ in range(rows)]
@@ -57,8 +57,8 @@ class AbstractBoard:
 
 class CheckersBoard(AbstractBoard):
 
-    def __init__(self):
-        super.__init__(10, 10)
+    def __init__(self): #http://stackoverflow.com/questions/9698614/super-raises-typeerror-must-be-type-not-classobj-for-new-style-class
+        super(CheckersBoard,self).__init__(10, 10)
 
 
     def populate_board(self):
@@ -72,7 +72,7 @@ class CheckersBoard(AbstractBoard):
 class ChessBoard(AbstractBoard):
 
     def __init__(self):
-        super.__init__(8, 8)
+        super(ChessBoard,self).__init__(8, 8)
 
 
     def populate_board(self):
