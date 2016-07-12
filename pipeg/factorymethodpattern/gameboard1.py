@@ -10,15 +10,12 @@ BLACK, WHITE = ("BLACK", "WHITE")
 
 
 def main():
-    output = io.StringIO()
 
     checkers = CheckersBoard()
-    output.write(unicode(checkers))
+    print unicode(checkers)
 
     chess = ChessBoard()
-    output.write(unicode(chess))
-
-    output.close()
+    print unicode(chess)
 
     if sys.platform.startswith("win"):
         filename = os.path.join('./factorymethodpattern', "gameboard.txt")
@@ -109,8 +106,8 @@ class Piece(str):
 class BlackDraught(Piece):
 
     __slots__ = ()
-    #object.__new__(cls[, ...]),Called to create a new instance of class cls.
-    def __new__(Class):
+    # object.__new__(cls[, ...]),Called to create a new instance of class cls.
+    def __new__(Class):         # super 指的是 MRO 中的下一个类
         return super(BlackDraught,Class).__new__(Class, "\N{black draughts man}")
 
 

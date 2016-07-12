@@ -22,7 +22,7 @@ def main():
         filename = os.path.join(tempfile.gettempdir(), "gameboard.txt")
         with open(filename, "w", encoding="utf-8") as file:
             file.write(sys.stdout.getvalue())
-        print("wrote '{}'".format(filename), file=sys.__stdout__)
+        print "wrote '{}'".format(filename), file
 
 
 if sys.platform.startswith("win"):
@@ -35,7 +35,7 @@ else:
                 43 if background == BLACK else 47, char or " ")
 
 
-class AbstractBoard:
+class AbstractBoard(object):
 
     def __init__(self, rows, columns):
         self.board = [[None for _ in range(columns)] for _ in range(rows)]
@@ -59,7 +59,7 @@ class AbstractBoard:
 class CheckersBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(10, 10)
+        super(CheckersBoard,self).__init__(10, 10)
 
 
     def populate_board(self):
@@ -74,7 +74,7 @@ class CheckersBoard(AbstractBoard):
 class ChessBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(8, 8)
+        super(ChessBoard,self).__init__(8, 8)
 
 
     def populate_board(self):
@@ -102,6 +102,7 @@ class Piece(str):
 
 
 for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
+    print code
     char = chr(code)
     name = unicodedata.name(char).title().replace(" ", "")
     if name.endswith("sMan"):
