@@ -10,15 +10,19 @@ BLACK, WHITE = ("BLACK", "WHITE")
 
 
 def main():
+    output = io.StringIO()
+
     checkers = CheckersBoard()
-    print(checkers)
+    output.write(unicode(checkers))
 
     chess = ChessBoard()
-    print(chess)
+    output.write(unicode(chess))
+
+    output.close()
 
     if sys.platform.startswith("win"):
         filename = os.path.join('./factorymethodpattern', "gameboard.txt")
-        with open(filename, "w", encoding="utf-8") as file:
+        with open(filename, "w") as file:
             file.write(sys.stdout.getvalue())
         file=sys.__stdout__
         print("wrote '{}'".format(filename), file)
@@ -105,9 +109,9 @@ class Piece(str):
 class BlackDraught(Piece):
 
     __slots__ = ()
-
+    #object.__new__(cls[, ...]),Called to create a new instance of class cls.
     def __new__(Class):
-        return super(BlackDraught).__new__(Class, "\N{black draughts man}")
+        return super(BlackDraught,Class).__new__(Class, "\N{black draughts man}")
 
 
 class WhiteDraught(Piece):
@@ -115,7 +119,7 @@ class WhiteDraught(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteDraught).__new__(Class, "\N{white draughts man}")
+        return super(WhiteDraught,Class).__new__(Class, "\N{white draughts man}")
 
 
 class BlackChessKing(Piece):
@@ -123,7 +127,7 @@ class BlackChessKing(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessKing).__new__(Class, "\N{black chess king}")
+        return super(BlackChessKing,Class).__new__(Class, "\N{black chess king}")
 
 
 class WhiteChessKing(Piece):
@@ -131,7 +135,7 @@ class WhiteChessKing(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessKing).__new__(Class, "\N{white chess king}")
+        return super(WhiteChessKing,Class).__new__(Class, "\N{white chess king}")
 
 
 class BlackChessQueen(Piece):
@@ -139,7 +143,7 @@ class BlackChessQueen(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessQueen).__new__(Class, "\N{black chess queen}")
+        return super(BlackChessQueen,Class).__new__(Class, "\N{black chess queen}")
 
 
 class WhiteChessQueen(Piece):
@@ -147,7 +151,7 @@ class WhiteChessQueen(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessQueen).__new__(Class, "\N{white chess queen}")
+        return super(WhiteChessQueen,Class).__new__(Class, "\N{white chess queen}")
 
 
 class BlackChessRook(Piece):
@@ -155,7 +159,7 @@ class BlackChessRook(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessRook).__new__(Class, "\N{black chess rook}")
+        return super(BlackChessRook,Class).__new__(Class, "\N{black chess rook}")
 
 
 class WhiteChessRook(Piece):
@@ -163,7 +167,7 @@ class WhiteChessRook(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessRook).__new__(Class, "\N{white chess rook}")
+        return super(WhiteChessRook,Class).__new__(Class, "\N{white chess rook}")
 
 
 class BlackChessBishop(Piece):
@@ -171,7 +175,7 @@ class BlackChessBishop(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessBishop).__new__(Class, "\N{black chess bishop}")
+        return super(BlackChessBishop,Class).__new__(Class, "\N{black chess bishop}")
 
 
 class WhiteChessBishop(Piece):
@@ -179,7 +183,7 @@ class WhiteChessBishop(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessBishop).__new__(Class, "\N{white chess bishop}")
+        return super(WhiteChessBishop,Class).__new__(Class, "\N{white chess bishop}")
 
 
 class BlackChessKnight(Piece):
@@ -187,7 +191,7 @@ class BlackChessKnight(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessKnight).__new__(Class, "\N{black chess knight}")
+        return super(BlackChessKnight,Class).__new__(Class, "\N{black chess knight}")
 
 
 class WhiteChessKnight(Piece):
@@ -195,7 +199,7 @@ class WhiteChessKnight(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessKnight).__new__(Class, "\N{white chess knight}")
+        return super(WhiteChessKnight,Class).__new__(Class, "\N{white chess knight}")
 
 
 class BlackChessPawn(Piece):
@@ -203,7 +207,7 @@ class BlackChessPawn(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(BlackChessPawn).__new__(Class, "\N{black chess pawn}")
+        return super(BlackChessPawn,Class).__new__(Class, "\N{black chess pawn}")
 
 
 class WhiteChessPawn(Piece):
@@ -211,7 +215,7 @@ class WhiteChessPawn(Piece):
     __slots__ = ()
     
     def __new__(Class):
-        return super(WhiteChessPawn).__new__(Class, "\N{white chess pawn}")
+        return super(WhiteChessPawn,Class).__new__(Class, "\N{white chess pawn}")
 
 
 if __name__ == "__main__":
