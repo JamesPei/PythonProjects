@@ -25,7 +25,7 @@ def main():
         filename = os.path.join(tempfile.gettempdir(), "gameboard.txt")
         with open(filename, "w", encoding="utf-8") as file:
             file.write(sys.stdout.getvalue())
-        print("wrote '{}'".format(filename), file=sys.__stdout__)
+        print "wrote '{}'".format(filename), sys.__stdout__
 
 
 if sys.platform.startswith("win"):
@@ -55,11 +55,12 @@ for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
     if name.endswith("sMan"):
         name = name[:-4]
     new = make_new_method(char)
+    # class type(name, bases, dict)
     Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
     setattr(sys.modules[__name__], name, Class) # Can be done better!
 
 
-class AbstractBoard:
+class AbstractBoard(object):
 
     __classForPiece = {(DRAUGHT, BLACK): BlackDraught,
             (PAWN, BLACK): BlackChessPawn,
@@ -102,7 +103,7 @@ class AbstractBoard:
 class CheckersBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(10, 10)
+        super(CheckersBoard,self).__init__(10, 10)
 
 
     def populate_board(self):
@@ -117,7 +118,7 @@ class CheckersBoard(AbstractBoard):
 class ChessBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(8, 8)
+        super(ChessBoard,self).__init__(8, 8)
 
 
     def populate_board(self):
