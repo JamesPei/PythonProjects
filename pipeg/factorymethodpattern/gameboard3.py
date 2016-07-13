@@ -50,11 +50,12 @@ def make_new_method(char): # Needed to create a fresh method each time
 
 
 for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
-    char = chr(code)
+    char = unichr(code)
     name = unicodedata.name(char).title().replace(" ", "")
     if name.endswith("sMan"):
         name = name[:-4]
-    new = make_new_method(char)
+    # new = make_new_method(char)
+    new = (lambda char: lambda Class:Piece.__new__(Class,char))(char)
     # class type(name, bases, dict)
     Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
     setattr(sys.modules[__name__], name, Class) # Can be done better!

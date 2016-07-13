@@ -102,8 +102,7 @@ class Piece(str):
 
 
 for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
-    print code
-    char = chr(code)
+    char = unichr(code)
     name = unicodedata.name(char).title().replace(" ", "")
     if name.endswith("sMan"):
         name = name[:-4]
@@ -113,7 +112,7 @@ class {}(Piece):
     __slots__ = ()
 
     def __new__(Class):
-        return super().__new__(Class, "{}")""".format(name, char))
+        return super().__new__(Class, "{}")""".format(name, char.encode('utf-8')))
     # Using exec() is risky
 
 
