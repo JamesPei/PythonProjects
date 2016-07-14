@@ -25,7 +25,7 @@ def main():
         filename = os.path.join(tempfile.gettempdir(), "gameboard.txt")
         with open(filename, "w", encoding="utf-8") as file:
             file.write(sys.stdout.getvalue())
-        print("wrote '{}'".format(filename), file=sys.__stdout__)
+        print "wrote '{}'".format(filename), sys.__stdout__
 
 
 if sys.platform.startswith("win"):
@@ -75,14 +75,14 @@ class CheckersBoard(AbstractBoard):
                 (None, None), (None, None), # 2 blank rows
                 (None, white()), (white(), None), (None, white()),
                 (white(), None))            # 4 white rows
-        self.board = [list(itertools.islice(
+        self.board = [list(itertools.islice( # Make an iterator that returns selected elements from the iterable
             itertools.cycle(squares), 0, len(rows))) for squares in rows]
 
 
 class ChessBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(8, 8)
+        super(ChessBoard, self).__init__(8, 8)
 
 
     def populate_board(self):
@@ -110,7 +110,7 @@ class Piece(str):
 
 
 for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
-    char = chr(code)
+    char = unichr(code)
     name = unicodedata.name(char).title().replace(" ", "")
     if name.endswith("sMan"):
         name = name[:-4]
