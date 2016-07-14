@@ -25,7 +25,7 @@ def main():
         filename = os.path.join(tempfile.gettempdir(), "gameboard.txt")
         with open(filename, "w", encoding="utf-8") as file:
             file.write(sys.stdout.getvalue())
-        print("wrote '{}'".format(filename), file=sys.__stdout__)
+        print "wrote '{}'".format(filename), sys.__stdout__
 
 
 if sys.platform.startswith("win"):
@@ -38,7 +38,23 @@ else:
                 43 if background == BLACK else 47, char or " ")
 
 
-class AbstractBoard:
+class Piece(str):
+
+    __slots__ = ()
+
+
+for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
+    char = unichr(code)
+    name = unicodedata.name(char).title().replace(" ", "")
+    if name.endswith("sMan"):
+        name = name[:-4]
+    new = (lambda char: lambda Class: Piece.__new__(Class, char))(char.encode('utf-8'))
+    new.__name__ = "__new__"
+    Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
+    globals()[name] = Class
+
+
+class AbstractBoard(object):
 
     def __init__(self, rows, columns):
         self.board = [[None for _ in range(columns)] for _ in range(rows)]
@@ -62,6 +78,7 @@ class AbstractBoard:
 class CheckersBoard(AbstractBoard):
 
     def __init__(self):
+        super(CheckersBoard, self).__init__(10,10)
         self.populate_board()
 
 
@@ -79,10 +96,11 @@ class CheckersBoard(AbstractBoard):
             itertools.cycle(squares), 0, len(rows))) for squares in rows]
 
 
+
 class ChessBoard(AbstractBoard):
 
     def __init__(self):
-        super().__init__(8, 8)
+        super(ChessBoard, self).__init__(8, 8)
 
 
     def populate_board(self):
@@ -102,22 +120,6 @@ def create_piece(kind, color):
             KNIGHT: "ChessKnight", BISHOP: "ChessBishop",
             KING: "ChessKing", QUEEN: "ChessQueen"}[kind]
     return globals()[color + name]()
-
-
-class Piece(str):
-
-    __slots__ = ()
-
-
-for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
-    char = chr(code)
-    name = unicodedata.name(char).title().replace(" ", "")
-    if name.endswith("sMan"):
-        name = name[:-4]
-    new = (lambda char: lambda Class: Piece.__new__(Class, char))(char)
-    new.__name__ = "__new__"
-    Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
-    globals()[name] = Class
 
 
 if __name__ == "__main__":

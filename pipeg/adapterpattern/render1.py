@@ -1,25 +1,43 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import abc
+import collections
 import sys
 import textwrap
 if sys.version_info[:2] < (3, 2):
     from xml.sax.saxutils import escape
 else:
     from html import escape
-import Qtrac
 
-@Qtrac.has_methods("header", "paragraph", "footer")
-class Renderer(metaclass=abc.ABCMeta): pass
+# Thanks to Nick Coghlan for these!
+if sys.version_info[:2] >= (3, 3):
+    class Renderer(metaclass=abc.ABCMeta):
+
+        @classmethod
+        def __subclasshook__(Class, Subclass):
+            if Class is Renderer:
+                attributes = collections.ChainMap(*(Superclass.__dict__
+                        for Superclass in Subclass.__mro__))
+                methods = ("header", "paragraph", "footer")
+                if all(method in attributes for method in methods):
+                    return True
+            return NotImplemented
+else:
+    class Renderer(metaclass=abc.ABCMeta):
+
+        @classmethod
+        def __subclasshook__(Class, Subclass):
+            if Class is Renderer:
+                needed = {"header", "paragraph", "footer"}
+                for Superclass in Subclass.__mro__:     # This attribute is a tuple of classes that are considered when looking for base classes during method resolution
+                    for meth in needed.copy():
+                        if meth in Superclass.__dict__:
+                            needed.discard(meth)
+                    if not needed:
+                        return True
+            return NotImplemented
+
 
 MESSAGE = """This is a very short {} paragraph that demonstrates
 the simple {} class."""

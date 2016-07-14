@@ -54,8 +54,8 @@ for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
     name = unicodedata.name(char).title().replace(" ", "")
     if name.endswith("sMan"):
         name = name[:-4]
-    # new = make_new_method(char)
-    new = (lambda char: lambda Class:Piece.__new__(Class,char))(char)
+    # new = make_new_method(char.encode('utf-8'))
+    new = (lambda char: lambda Class:Piece.__new__(Class,char))(char.encode('utf-8'))
     # class type(name, bases, dict)
     Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
     setattr(sys.modules[__name__], name, Class) # Can be done better!
