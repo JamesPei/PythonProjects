@@ -7,6 +7,13 @@ import sys
 import tempfile
 import unicodedata
 
+# __new__和__init__的区别
+# __new__:创建对象时调用，会返回当前对象的一个实例
+# __init__:创建完对象后调用，对当前对象的一些实例初始化，无返回值
+# 在类中，如果__new__和__init__同时存在，会优先调用__new_
+# __new__方法会返回所构造的对象，__init__则不会。__init__无返回值
+# If __new__() returns an instance of cls, then the new instance’s __init__() method will be invoked like __init__(self[, ...]),
+# where self is the new instance and the remaining arguments are the same as were passed to __new__().
 
 BLACK, WHITE = ("BLACK", "WHITE")
 
@@ -112,7 +119,7 @@ class {}(Piece):
     __slots__ = ()
 
     def __new__(Class):
-        return super().__new__(Class, "{}")""".format(name, char.encode('utf-8')))
+        return super(Piece ,Class).__new__(Class, "{}")""".format(name, char.encode('utf-8')))
     # Using exec() is risky
 
 
