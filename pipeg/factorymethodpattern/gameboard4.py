@@ -122,7 +122,6 @@ def create_piece(kind, color):
     return globals()[color + name]()
 
 
-<<<<<<< HEAD
 class Piece(str):
 
     __slots__ = ()
@@ -138,8 +137,5 @@ for code in itertools.chain((0x26C0, 0x26C2), range(0x2654, 0x2660)):
     Class = type(name, (Piece,), dict(__slots__=(), __new__=new))
     globals()[name] = Class
 
-
-=======
->>>>>>> origin/master
 if __name__ == "__main__":
     main()
