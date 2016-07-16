@@ -1,23 +1,15 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import abc
 import os
 import re
 import tempfile
-import Qtrac
+import pipeg.Qtrac
 try:
-    import cyImage as Image
+    import pipeg.cyImage as Image
 except ImportError:
-    import Image
+    import pipeg.Image
 
 
 def main():
@@ -29,7 +21,7 @@ def main():
     imageBarCharter.render("Forecast 6/8", pairs)
 
 
-class BarRenderer(Qtrac.Requirer):
+class BarRenderer(pipeg.Qtrac.Requirer):
     required_methods = {"initialize", "draw_caption", "draw_bar",
             "finalize"}
 
@@ -78,7 +70,7 @@ class TextBarRenderer:
 
 class ImageBarRenderer:
 
-    COLORS = [Image.color_for_name(name) for name in ("red", "green",
+    COLORS = [pipeg.Image.color_for_name(name) for name in ("red", "green",
               "blue", "yellow", "magenta", "cyan")]
 
 
@@ -91,9 +83,9 @@ class ImageBarRenderer:
     def initialize(self, bars, maximum):
         assert bars > 0 and maximum > 0
         self.index = 0
-        color = Image.color_for_name("white")
-        self.image = Image.Image(bars * (self.barWidth + self.barGap),
-                maximum * self.stepHeight, background=color)
+        color = pipeg.Image.color_for_name("white")
+        self.image = pipeg.Image.Image(bars * (self.barWidth + self.barGap),
+                                       maximum * self.stepHeight, background=color)
 
 
     def draw_caption(self, caption):

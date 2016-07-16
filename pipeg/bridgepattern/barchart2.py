@@ -1,20 +1,12 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import abc
 import os
 import re
 import tempfile
 import tkinter as tk
-import Qtrac
+import pipeg.Qtrac
 
 
 def main():
@@ -26,7 +18,7 @@ def main():
     imageBarCharter.render("Forecast 6/8", pairs)
 
 
-@Qtrac.has_methods("initialize", "draw_caption", "draw_bar", "finalize")
+@pipeg.Qtrac.has_methods("initialize", "draw_caption", "draw_bar", "finalize")
 class BarRenderer(metaclass=abc.ABCMeta): pass
 
 
