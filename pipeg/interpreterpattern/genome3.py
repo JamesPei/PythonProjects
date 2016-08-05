@@ -2,8 +2,13 @@
 #-*- coding:utf-8 -*-
 
 import collections
+import pickle
+import os
+import re
+import subprocess
 import sys
 
+UTF8 = "utf-8"
 TRANSFORM, SUMMARIZE = ("TRANSFORM", "SUMMARIZE")
 
 Code = collections.namedtuple("Code", "name code kind")
@@ -11,19 +16,49 @@ Code = collections.namedtuple("Code", "name code kind")
 
 def main():
     genome = 3 * GENOME
-    for code in CODE:
+    for i, code in enumerate(CODE):
         context = dict(genome=genome, target="G[AC]{2}TT", replace="TCGA")
         execute(code, context)
 
 
-def execute(code, context):
-    try:
-        exec(code.code, globals(), context)
-        result = context.get("result")
-        error = context.get("error")
+if sys.version_info[:2] > (3, 1):
+    def execute(code, context):
+        module, offset = create_module(code.code, context)
+        with subprocess.Popen([sys.executable, "-"], stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+            communicate(process, code, module, offset)
+else:
+    def execute(code, context):
+        module, offset = create_module(code.code, context)
+        process = subprocess.Popen([sys.executable, "-"],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        communicate(process, code, module, offset)
+
+
+def create_module(code, context):
+    lines = ["import pickle", "import sys", "result = error = None"]
+    for key, value in context.items():
+        lines.append("{} = {!r}".format(key, value))
+    offset = len(lines) + 1
+    outputLine = "\nsys.stdout.buffer.write(pickle.dumps((result, error)))"
+    return "\n".join(lines) + "\n" + code + outputLine, offset
+
+
+def communicate(process, code, module, offset):
+    stdout, stderr = process.communicate(module.encode(UTF8))
+    if stderr:
+        stderr = stderr.decode(UTF8).lstrip().replace(", in <module>", ":")
+        stderr = re.sub(", line (\d+)",
+                lambda match: str(int(match.group(1)) - offset), stderr)
+        print(re.sub(r'File."[^"]+?"', "'{}' has an error on line "
+                .format(code.name), stderr))
+        return
+    if stdout:
+        result, error = pickle.loads(stdout)
         handle_result(code, result, error)
-    except Exception as err:
-        print("'{}' raised an exception: {}\n".format(code.name, err))
+        return
+    print("'{}' produced no result\n".format(code.name))
 
 
 def handle_result(code, result, error):

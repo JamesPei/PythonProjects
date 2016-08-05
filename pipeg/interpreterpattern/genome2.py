@@ -1,13 +1,5 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import collections
 import json
@@ -47,7 +39,7 @@ else:
 def create_module(code, context):
     lines = ["import json", "result = error = None"]
     for key, value in context.items():
-        lines.append("{} = {!r}".format(key, value))
+        lines.append("{} = {!r}".format(key, value))        #'!s' which calls str() on the value, and '!r' which calls repr()
     offset = len(lines) + 1
     outputLine = "\nprint(json.dumps((result, error)))"
     return "\n".join(lines) + "\n" + code + outputLine, offset
