@@ -76,7 +76,7 @@ def handle_result(code, result, error):
                     code.name, err))
     elif code.kind == SUMMARIZE:
         print("'{}' produced a result of {}".format(code.name, result))
-    print()
+    # print()
 
 
 CODE = (
