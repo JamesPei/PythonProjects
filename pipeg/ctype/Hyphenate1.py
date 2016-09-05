@@ -12,9 +12,8 @@
 """
 Typical usage:
 
->>> import os
->>> import Hyphenate1 as Hyphenate
->>> 
+>>> from ctype import Hyphenate1 as Hyphenate import os
+>>>
 >>> # Locate your hyph*.dic files
 >>> path = "/usr/share/hyph_dic"
 >>> if not os.path.exists(path): path = os.path.dirname(__file__)
@@ -57,7 +56,7 @@ _load.restype = ctypes.c_void_p     # HyphenDict *
 _int_p = ctypes.POINTER(ctypes.c_int)
 _char_p_p = ctypes.POINTER(ctypes.c_char_p)
 
-# The ctypes.c_void_p passed to _hyphenate and _unload is really of type
+# The ctype.c_void_p passed to _hyphenate and _unload is really of type
 # struct HyphenDict*
 _hyphenate = _LibHyphen.hnj_hyphen_hyphenate2
 _hyphenate.argtypes = [

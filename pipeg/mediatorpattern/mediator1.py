@@ -1,13 +1,5 @@
-#!/usr/bin/env python3
-# Copyright © 2012-13 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version. It is provided for
-# educational purposes and is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+#__author__= 'James'
+#-*-coding:utf-8-*-
 
 import collections
 
@@ -70,17 +62,18 @@ class Mediator:
                     .format(widget))
 
 
-def mediated(Class):
-    setattr(Class, "mediator", None)
+class Mediated:
+
+    def __init__(self):
+        self.mediator = None
+
+
     def on_change(self):
         if self.mediator is not None:
             self.mediator.on_change(self)
-    setattr(Class, "on_change", on_change)
-    return Class
 
 
-@mediated
-class Button:
+class Button(Mediated):
 
     def __init__(self, text=""):
         super().__init__()
@@ -98,8 +91,7 @@ class Button:
                 "enabled" if self.enabled else "disabled")
 
 
-@mediated
-class Text:
+class Text(Mediated):
 
     def __init__(self, text=""):
         super().__init__()

@@ -1,4 +1,5 @@
-#-*-coding:utf-8-*-
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import collections
 import json
@@ -38,7 +39,7 @@ else:
 def create_module(code, context):
     lines = ["import json", "result = error = None"]
     for key, value in context.items():
-        lines.append("{} = {!r}".format(key, value))
+        lines.append("{} = {!r}".format(key, value))        #'!s' which calls str() on the value, and '!r' which calls repr()
     offset = len(lines) + 1
     outputLine = "\nprint(json.dumps((result, error)))"
     return "\n".join(lines) + "\n" + code + outputLine, offset
