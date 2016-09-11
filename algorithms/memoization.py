@@ -179,3 +179,5 @@ if __name__=='__main__':
     a,b='spock','asoka'
     # print rec_lcs(a,b)
     print lcs(a,b)
+
+    print unbounded_knapsack([1,1,2,3],[1,3,3,10],5)
