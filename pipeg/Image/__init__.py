@@ -48,7 +48,6 @@ except ImportError:
     numpy = None
     import array
 
-
 CLEAR_ALPHA = 0x00FFFFFF # & to ARGB color int to get rid of alpha channel
 MAX_ARGB = 0xFFFFFFFF
 MAX_COMPONENT = 0xFF
@@ -57,13 +56,13 @@ SOLID = 0xFF000000 # + to RGB color int to get a solid ARGB color int
 
 class Error(Exception): pass
 
-
+s = __file__
 _Modules = []
 for name in os.listdir(os.path.dirname(__file__)):
     if not name.startswith("_") and name.endswith(".py"):
-        name = "." + os.path.splitext(name)[0]
+        name = '.'+os.path.splitext(name)[0]
         try:
-            module = importlib.import_module(name, "Image")
+            module = importlib.import_module("Image"+name)
             _Modules.append(module)
         except ImportError as err:
             warnings.warn("failed to load Image module: {}".format(err))

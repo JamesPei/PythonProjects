@@ -1,4 +1,5 @@
-#-*-coding:utf-8-*-
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import collections
 import sys
@@ -40,7 +41,7 @@ def handle_result(code, result, error):
                     code.name, err))
     elif code.kind == SUMMARIZE:
         print("'{}' produced a result of {}".format(code.name, result))
-    print()
+    # print()
 
 
 CODE = (

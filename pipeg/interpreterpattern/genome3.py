@@ -1,4 +1,5 @@
-#-*-coding:utf-8-*-
+#__author__ = 'James'
+#-*- coding:utf-8 -*-
 
 import collections
 import pickle
