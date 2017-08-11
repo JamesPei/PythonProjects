@@ -101,7 +101,7 @@
 # synchronous()
 #
 # print('Asynchronous:')
-# asynchronous()
+# asynchronous()/home/jamespei/atompai/wolverine
 
 
 # import time
@@ -647,3 +647,135 @@
 #     g1 = gevent.spawn(get_msg)
 #     g2 = gevent.spawn(put_msg)
 #     gevent.joinall([g1, g2], timeout=1)
+
+
+# # Actor
+# import gevent
+# from gevent.greenlet import Greenlet
+# from gevent.queue import Queue
+#
+#
+# class Actor(Greenlet):
+#     def __init__(self):
+#         self.inbox = Queue()
+#         Greenlet.__init__(self)
+#
+#     def receive(self, message):
+#         raise NotImplemented()
+#
+#     def _run(self):
+#         self.running = True
+#
+#         while self.running:
+#             message = self.inbox.get()
+#             self.receive(message)
+#
+# # use case
+# class Pinger(Actor):
+#     def receive(self, message):
+#         print message
+#         pong.inbox.put('ping')
+#         gevent.sleep(1)
+#
+# class Ponger(Actor):
+#     def receive(self, message):
+#         print message
+#         ping.inbox.put('pong')
+#         gevent.sleep(1)
+#
+# ping = Pinger()
+# pong = Ponger()
+#
+# ping.start()
+# pong.start()
+#
+# ping.inbox.put('start')
+# gevent.joinall([ping, pong])
+
+
+# # zmq
+# import gevent
+# import zmq.green as zmq
+#
+# context = zmq.Context()
+#
+# def server():
+#     server_socket = context.socket(zmq.REQ)
+#     server_socket.bind("tcp://127.0.0.1:5000")
+#
+#     for request in range(1,10):
+#         server_socket.send("Hello")
+#         print "Switched to Server for %s" % request
+#         server_socket.recv()
+#
+#
+# def client():
+#     client_socket = context.socket(zmq.REP)
+#     client_socket.connect("tcp://127.0.0.1:5000")
+#
+#     for request in range(1,10):
+#         client_socket.recv()
+#         print "Switched to Client for %s" % request
+#         client_socket.send("World")
+#
+# publisher = gevent.spawn(server)
+# client = gevent.spawn(client)
+#
+# gevent.joinall([publisher, client])
+
+# # Simple Server
+# from gevent.server import StreamServer
+#
+# def handle(socket, address):
+#     socket.send("Hello from a telnet!\n")
+#     for i in range(5):
+#         socket.send(str(i) + '\n')
+#     socket.close()
+#
+# server = StreamServer(('127.0.0.1', 5000), handle)
+# server.serve_forever()
+
+# # Streaming Servers
+# from gevent.pywsgi import WSGIServer
+#
+# def application(environ, start_response):
+#     status = '200 OK'
+#
+#     headers = [('Context-Type', 'text/html')]
+#
+#     start_response(status, headers)
+#     yield "<p>Hello"
+#     yield "World</p>"
+#
+# WSGIServer(('', 8000), application).serve_forever()
+
+
+# long polling
+import gevent
+from gevent.queue import Queue, Empty
+from gevent.pywsgi import WSGIServer
+import simplejson as json
+
+data_source = Queue()
+
+def producer():
+    while True:
+        data_source.put_nowait('Hello World')
+        gevent.sleep(1)
+
+def ajax_endpoint(environ, start_response):
+    status = '200 OK'
+    headers = [('Context-Type', 'application/json')]
+
+    start_response(status, headers)
+
+    while True:
+        try:
+            datum = data_source.get(timeout=5)
+            yield json.dumps(datum) + '\n'
+        except Empty:
+            pass
+
+gevent.spawn(producer)
+
+WSGIServer(('', 8000), ajax_endpoint).serve_forever()
