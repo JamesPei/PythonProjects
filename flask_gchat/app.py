@@ -7,6 +7,7 @@ from gevent.pywsgi import WSGIServer
 app = Flask(__name__)
 app.debug = True
 
+
 class Room(object):
 
     def __init__(self):
@@ -25,17 +26,20 @@ class Room(object):
             user.queue.put_nowait(message)
         self.messages.append(message)
 
+
 class User(object):
     def __init__(self):
         self.queue = queue.Queue()
 
-rooms = { 'python': Room(), 'django':Room(),}
+rooms = {'python': Room(), 'django': Room(), }
 
 users = {}
+
 
 @app.route('/')
 def choose_name():
     return render_template('main.html', uid=uid, rooms=rooms.keys())
+
 
 @app.route('/<room>/<uid>')
 def join(room, uid):
@@ -52,6 +56,7 @@ def join(room, uid):
 
     return render_template('room.html', room=room, uid=uid, message=message)
 
+
 @app.route("/put/<room>/<uid>", methods=["POST"])
 def poll(uid):
     try:
@@ -60,6 +65,7 @@ def poll(uid):
         msg = []
     return json.dumps(msg)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     http = WSGIServer(('', 5000), app)
     http.serve_forever()
