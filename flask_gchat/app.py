@@ -38,7 +38,7 @@ users = {}
 
 @app.route('/')
 def choose_name():
-    return render_template('main.html', uid=uid, rooms=rooms.keys())
+    return render_template('choose.html')
 
 
 @app.route('/<room>/<uid>')
