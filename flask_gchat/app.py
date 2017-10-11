@@ -1,8 +1,8 @@
-from gevent import monkey; monkey.patch_all()
-from flask import Flask, render_template, request, json
+from flask import Flask, render_template, request
 
 from gevent import queue
 from gevent.pywsgi import WSGIServer
+import simplejson as json
 
 app = Flask(__name__)
 app.debug = True
@@ -32,13 +32,17 @@ class User(object):
         self.queue = queue.Queue()
 
 rooms = {'python': Room(), 'django': Room(), }
-
 users = {}
 
 
 @app.route('/')
 def choose_name():
     return render_template('choose.html')
+
+
+@app.route('/<uid>')
+def main(uid):
+    return render_template('main.html', uid=uid, rooms=rooms.keys())
 
 
 @app.route('/<room>/<uid>')
@@ -58,6 +62,16 @@ def join(room, uid):
 
 
 @app.route("/put/<room>/<uid>", methods=["POST"])
+def put(room, uid):
+    room = rooms[room]
+
+    message = request.form['message']
+    room.add(':'.join([uid, message]))
+
+    return ''
+
+
+@app.route("/poll/<uid>", methods=['POST'])
 def poll(uid):
     try:
         msg = users[uid].queue.get(timeout=10)
@@ -67,5 +81,5 @@ def poll(uid):
 
 
 if __name__ == '__main__':
-    http = WSGIServer(('', 5000), app)
+    http = WSGIServer(('0.0.0.0', 5000), app)
     http.serve_forever()

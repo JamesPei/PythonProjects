@@ -8,7 +8,7 @@
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
             $("#choose").submit(function(e) {
-                document.location = $("#uid").val();
+                document.location = document.location+$("#uid").val();
                 e.preventDefault();
             });
         });
@@ -20,5 +20,6 @@
     <input id="uid"></input>
     <input type="submit" />
     </form>
+
 </body>
 </html>
